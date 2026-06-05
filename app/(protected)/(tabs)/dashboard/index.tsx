@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Linking } from 'react-native'
+import React, { useCallback, useMemo, useState } from 'react'
+import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Linking, RefreshControl } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import { ScreenContainer, InitialAvatar, BrandWordmark } from '@/components'
+import { ScreenContainer, InitialAvatar, BrandWordmark, PressableScale, Reveal } from '@/components'
 import { pastelAt, type Pastel } from '@/constants/theme'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -100,6 +100,15 @@ export default function DashboardScreen() {
   const router = useRouter()
   const [activeCategory, setActiveCategory] = useState('All')
   const [search, setSearch] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
+
+  // Pull-to-refresh. Content is static placeholder for now, so this just shows
+  // the spinner briefly — swap the timeout for the dashboard query's refetch
+  // once that API is wired.
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    setTimeout(() => setRefreshing(false), 900)
+  }, [])
 
   const firstName = user?.name?.split(' ')[0] ?? 'there'
 
@@ -131,26 +140,32 @@ export default function DashboardScreen() {
 
   return (
     <ScreenContainer edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#13A07C" colors={['#13A07C']} />
+        }
+      >
         {/* Top bar with brand wordmark */}
-        <View style={styles.topBar}>
+        <Reveal index={0} style={styles.topBar}>
           <BrandWordmark size={22} />
-          <Pressable style={styles.menuBtn} hitSlop={8}>
+          <PressableScale style={styles.menuBtn} hitSlop={8} activeScale={0.88}>
             <Ionicons name="notifications-outline" size={22} color={BRAND} />
-          </Pressable>
-        </View>
+          </PressableScale>
+        </Reveal>
 
         {/* Greeting */}
-        <View style={styles.greeting}>
+        <Reveal index={1} style={styles.greeting}>
           <InitialAvatar name={user?.name ?? 'Employee'} size={44} />
           <View style={styles.greetingText}>
             <Text style={styles.hello}>Hello 👋</Text>
             <Text style={styles.name}>{firstName}</Text>
           </View>
-        </View>
+        </Reveal>
 
         {/* Search */}
-        <View style={styles.searchBar}>
+        <Reveal index={2} style={styles.searchBar}>
           <Ionicons name="search" size={18} color="#9AA1AD" />
           <TextInput
             style={styles.searchInput}
@@ -165,37 +180,50 @@ export default function DashboardScreen() {
               <Ionicons name="close-circle" size={18} color="#C2C7CF" />
             </Pressable>
           )}
-        </View>
+        </Reveal>
 
         {/* Category chips */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsRow}>
-          {CATEGORIES.map((cat) => {
-            const active = cat === activeCategory
-            return (
-              <Pressable key={cat} onPress={() => setActiveCategory(cat)} style={[styles.chip, active && styles.chipActive]}>
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>{cat}</Text>
-              </Pressable>
-            )
-          })}
-        </ScrollView>
-
-        {/* Sections */}
-        {visibleSections.map((section) => (
-          <View key={section.title}>
-            <Text style={styles.sectionTitle}>{section.title}</Text>
-            {section.cards.map((card, ci) => {
-              const pastel = pastelAt(ci)
+        <Reveal index={3} direction="fade">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsRow}>
+            {CATEGORIES.map((cat) => {
+              const active = cat === activeCategory
               return (
-                <ContentCard
-                  key={card.title}
-                  card={card}
-                  pastel={pastel}
-                  onPress={() => openCard(section.title, card, pastel)}
-                />
+                <PressableScale
+                  key={cat}
+                  onPress={() => setActiveCategory(cat)}
+                  style={[styles.chip, active && styles.chipActive]}
+                  activeScale={0.93}
+                >
+                  <Text style={[styles.chipText, active && styles.chipTextActive]}>{cat}</Text>
+                </PressableScale>
               )
             })}
-          </View>
-        ))}
+          </ScrollView>
+        </Reveal>
+
+        {/* Sections */}
+        {(() => {
+          let row = 4 // continue the stagger after the 4 header rows
+          return visibleSections.map((section) => (
+            <View key={section.title}>
+              <Reveal index={row++}>
+                <Text style={styles.sectionTitle}>{section.title}</Text>
+              </Reveal>
+              {section.cards.map((card, ci) => {
+                const pastel = pastelAt(ci)
+                return (
+                  <Reveal key={card.title} index={row++}>
+                    <ContentCard
+                      card={card}
+                      pastel={pastel}
+                      onPress={() => openCard(section.title, card, pastel)}
+                    />
+                  </Reveal>
+                )
+              })}
+            </View>
+          ))
+        })()}
 
         {visibleSections.length === 0 && (
           <View style={styles.noResults}>
@@ -212,7 +240,7 @@ const ContentCard: React.FC<{ card: Card; pastel: Pastel; onPress: () => void }>
   const viewed = card.status === 'viewed'
   const label = card.status === 'pending' ? 'Pending' : card.status === 'viewed' ? 'Viewed' : 'View'
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <PressableScale style={styles.card} onPress={onPress} activeScale={0.97}>
       <View style={[styles.cardHero, { backgroundColor: pastel.bg }]}>
         <Text style={[styles.cardTagline, { color: pastel.accent }]} numberOfLines={2}>
           {card.tagline}
@@ -226,7 +254,7 @@ const ContentCard: React.FC<{ card: Card; pastel: Pastel; onPress: () => void }>
           <Text style={[styles.cardButtonText, viewed && styles.cardButtonTextViewed]}>{label}</Text>
         </View>
       </View>
-    </Pressable>
+    </PressableScale>
   )
 }
 

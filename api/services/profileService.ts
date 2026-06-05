@@ -46,19 +46,23 @@ export const profileService = {
     }),
 
   /**
-   * Upload a new profile picture (multipart/form-data, field `profile_picture`).
+   * Upload a new profile picture (multipart/form-data, field `profile_image`).
    *
-   * `uri` is a local file URI from the image picker/camera. NOTE: the endpoint
-   * is a convention (ENDPOINTS.profile.picture) — confirm with the backend.
+   * POST /upload-profile-image (Bearer). `uri` is a local file URI from the
+   * picker/camera — must be a square (1:1) JPG/PNG/WebP/GIF ≤ 5 MB. Returns
+   * { status, message, profile_picture (filename), profile_picture_url (URL) }.
+   * Errors: 422 (not an image / wrong type / > 5 MB / not square / field
+   * missing), 401 (token missing/invalid), 500 (upload dir not writable).
    */
   uploadProfilePicture: (uri: string): Promise<ProfilePictureResponse> => {
     const name = uri.split('/').pop() || `profile_${Date.now()}.jpg`
     const ext = name.split('.').pop()?.toLowerCase()
-    const type = ext === 'png' ? 'image/png' : 'image/jpeg'
+    const type =
+      ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : ext === 'gif' ? 'image/gif' : 'image/jpeg'
 
     const form = new FormData()
     // React Native's FormData accepts a { uri, name, type } file object.
-    form.append('profile_picture', { uri, name, type } as any)
+    form.append('profile_image', { uri, name, type } as any)
 
     return apiRequest<ProfilePictureResponse>({
       url: ENDPOINTS.profile.picture,
@@ -69,6 +73,26 @@ export const profileService = {
       headers: { 'Content-Type': 'multipart/form-data' },
       // Multipart image uploads on mobile networks can exceed the 20s instance
       // default; give them a 60s window (matches the OLD APP upload timeout).
+      timeout: 60000,
+    })
+  },
+
+  /**
+   * Remove the current profile picture.
+   *
+   * POST /upload-profile-image with `profile_image` set to an empty string
+   * (multipart, NOT JSON). Returns the same shape with `profile_picture` and
+   * `profile_picture_url` set to "".
+   */
+  removeProfilePicture: (): Promise<ProfilePictureResponse> => {
+    const form = new FormData()
+    form.append('profile_image', '')
+
+    return apiRequest<ProfilePictureResponse>({
+      url: ENDPOINTS.profile.picture,
+      method: 'POST',
+      body: form,
+      headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 60000,
     })
   },

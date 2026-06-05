@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
-import { ScreenContainer } from '@/components'
+import { ScreenContainer, PressableScale, Reveal } from '@/components'
 
 /**
  * Content detail / video screen — opened from a Dashboard card. Mirrors the web
@@ -24,48 +24,56 @@ export default function ContentDetail() {
     <ScreenContainer edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.headerRow}>
-          <Pressable style={styles.back} onPress={() => router.back()} hitSlop={8}>
-            <Ionicons name="chevron-back" size={24} color="#1B2233" />
-            <Text style={styles.backText}>Back</Text>
-          </Pressable>
-        </View>
-        <Text style={styles.title}>{title}</Text>
+        <Reveal index={0}>
+          <View style={styles.headerRow}>
+            <Pressable style={styles.back} onPress={() => router.back()} hitSlop={8}>
+              <Ionicons name="chevron-back" size={24} color="#1B2233" />
+              <Text style={styles.backText}>Back</Text>
+            </Pressable>
+          </View>
+          <Text style={styles.title}>{title}</Text>
+        </Reveal>
 
         {/* Language selector (static) */}
-        <Pressable style={styles.langPill}>
-          <Ionicons name="globe-outline" size={16} color="#1B2233" />
-          <Text style={styles.langText}>English</Text>
-          <Ionicons name="chevron-down" size={16} color="#1B2233" />
-        </Pressable>
+        <Reveal index={1}>
+          <PressableScale style={styles.langPill} activeScale={0.95}>
+            <Ionicons name="globe-outline" size={16} color="#1B2233" />
+            <Text style={styles.langText}>English</Text>
+            <Ionicons name="chevron-down" size={16} color="#1B2233" />
+          </PressableScale>
+        </Reveal>
 
         {/* Video player placeholder */}
-        <View style={[styles.player, { backgroundColor: color }]}>
-          <View style={styles.playerOverlay}>
-            <Pressable style={styles.playBtn}>
-              <Ionicons name="play" size={30} color="#FFFFFF" />
-            </Pressable>
-            {tagline ? <Text style={styles.playerCaption}>{tagline}</Text> : null}
+        <Reveal index={2}>
+          <View style={[styles.player, { backgroundColor: color }]}>
+            <View style={styles.playerOverlay}>
+              <PressableScale style={styles.playBtn} activeScale={0.9}>
+                <Ionicons name="play" size={30} color="#FFFFFF" />
+              </PressableScale>
+              {tagline ? <Text style={styles.playerCaption}>{tagline}</Text> : null}
+            </View>
+            {/* fake controls bar */}
+            <View style={styles.controls}>
+              <Ionicons name="pause" size={16} color="#FFFFFF" />
+              <Text style={styles.controlsTime}>0:00 / 6:51</Text>
+              <View style={{ flex: 1 }} />
+              <Ionicons name="volume-medium" size={16} color="#FFFFFF" />
+              <Ionicons name="settings-outline" size={16} color="#FFFFFF" style={{ marginLeft: 12 }} />
+            </View>
           </View>
-          {/* fake controls bar */}
-          <View style={styles.controls}>
-            <Ionicons name="pause" size={16} color="#FFFFFF" />
-            <Text style={styles.controlsTime}>0:00 / 6:51</Text>
-            <View style={{ flex: 1 }} />
-            <Ionicons name="volume-medium" size={16} color="#FFFFFF" />
-            <Ionicons name="settings-outline" size={16} color="#FFFFFF" style={{ marginLeft: 12 }} />
-          </View>
-        </View>
+        </Reveal>
 
         {/* Watched confirmation card */}
-        <Pressable style={styles.watchedCard} onPress={() => setWatched((w) => !w)}>
-          <View style={[styles.checkCircle, { backgroundColor: watched ? '#13A07C' : '#D1D5DB' }]}>
-            <Ionicons name="checkmark" size={34} color="#FFFFFF" />
-          </View>
-          <Text style={styles.watchedText}>
-            {watched ? 'Marked as watched' : 'I have already watched the Video'}
-          </Text>
-        </Pressable>
+        <Reveal index={3}>
+          <PressableScale style={styles.watchedCard} onPress={() => setWatched((w) => !w)} activeScale={0.98}>
+            <View style={[styles.checkCircle, { backgroundColor: watched ? '#13A07C' : '#D1D5DB' }]}>
+              <Ionicons name="checkmark" size={34} color="#FFFFFF" />
+            </View>
+            <Text style={styles.watchedText}>
+              {watched ? 'Marked as watched' : 'I have already watched the Video'}
+            </Text>
+          </PressableScale>
+        </Reveal>
       </ScrollView>
     </ScreenContainer>
   )

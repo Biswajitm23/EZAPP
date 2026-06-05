@@ -3,6 +3,7 @@
     "name": "Employee Zone",
     "slug": "empapp",
     "version": "1.0.0",
+    "icon": "./assets/images/app-icon.png",
     "orientation": "portrait",
     "scheme": "empapp",
     "userInterfaceStyle": "automatic",
@@ -15,6 +16,10 @@
     "android": {
       "edgeToEdgeEnabled": true,
       "package": "com.bitpastel.empapp",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/app-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
       "softwareKeyboardLayoutMode": "resize",
       "permissions": [
         "android.permission.RECORD_AUDIO"

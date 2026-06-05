@@ -13,5 +13,6 @@ export { ENDPOINTS } from './endpoints'
 
 export { authService } from './services/authService'
 export { profileService } from './services/profileService'
+export { bitpointsService } from './services/bitpointsService'
 
 export type * from './types'

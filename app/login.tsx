@@ -9,26 +9,33 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
-  Dimensions,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { BitpastelLogo, useFeedback } from '@/components'
+import { LinearGradient } from 'expo-linear-gradient'
+import AppLogo from '../assets/images/App_logo.svg'
+import Bitpastel from '../assets/images/bitpastel.svg'
+import { PressableScale, Reveal, useFeedback } from '@/components'
 import { useAuth } from '@/hooks/useAuth'
 import { isValidEmail } from '@/helpers'
 import { authService } from '@/api'
 
+// Vertical brand wash behind everything: brand green easing into a soft blue toe.
+const BACKDROP = ['#13A07C', '#16928C', '#2E6FB5'] as const
+
 /**
- * Employee Zone login — mirrors the look of the web portal
- * (https://www.bitpastel.org/employee-zone/): the Bitpastel wordmark, a soft
- * pastel "blob" backdrop, and a centered glass card with the Employee Zone
- * title, email/password fields, and an Enter button.
+ * Employee Zone login.
+ *
+ * Layout mirrors the Figma "Employee Zone App Design":
+ *   - a green → blue gradient backdrop,
+ *   - a header (app icon, "BITPASTEL", "Employee Zone") sitting on the green,
+ *   - a floating white card with a centered "Welcome Back" heading, labeled
+ *     email/password fields, and a gradient LOGIN button.
  *
  * The form + validation are wired locally; the network call goes through
- * `authService.login` (see api/services/authService.ts). Swap the endpoint /
- * mapping for the real Employee Zone auth contract when integrating the API.
+ * `authService.login` (see api/services/authService.ts).
  */
 export default function Login() {
   const router = useRouter()
@@ -58,6 +65,8 @@ export default function Login() {
     try {
       const result = await authService.login({ email: email.trim(), password })
       await signIn(result)
+      const first = result?.user?.name?.split(' ')[0]
+      toast.success(first ? `Welcome back, ${first}! 👋` : 'Logged in successfully.')
       router.replace('/(protected)/(tabs)/dashboard')
     } catch (err: any) {
       toast.error(loginErrorMessage(err))
@@ -68,77 +77,99 @@ export default function Login() {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
 
-      {/* Decorative pastel blobs echoing the web portal's photo collage */}
-      <DecorativeBackground />
+      {/* Green → blue gradient backdrop */}
+      <LinearGradient colors={BACKDROP} style={StyleSheet.absoluteFill} />
+      {/* Faint texture circles on the header (echoes the design) */}
+      <View pointerEvents="none" style={[styles.haloLg, { top: insets.top + 4 }]} />
+      <View pointerEvents="none" style={[styles.haloSm, { top: insets.top + 80 }]} />
 
-      <View style={[styles.safe, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={[
+            styles.scroll,
+            { paddingTop: insets.top + 36, paddingBottom: insets.bottom + 28 },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.card}>
-              <View style={styles.logoWrap}>
-                <BitpastelLogo width={140} />
-              </View>
+          {/* Header — app icon + brand. Static (no entrance): the animated splash
+              flies this exact lockup into place, so re-animating it here would
+              break the hand-off. */}
+          <View style={styles.header}>
+            <View style={styles.iconTile}>
+              <AppLogo width={84} height={84} />
+            </View>
+            <Bitpastel width={90} height={40} style={styles.wordmark} />
+            <Text style={styles.brandTitle}>Employee Zone</Text>
+          </View>
 
-              <Text style={styles.title}>Employee Zone</Text>
+          {/* Login card */}
+          <Reveal index={1} style={styles.card}>
+            <Text style={styles.welcome}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Sign in to your account</Text>
 
-              <Field
-                value={email}
-                onChangeText={setEmail}
-                placeholder="you@bitpastel.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                focused={focused === 'email'}
-                onFocus={() => setFocused('email')}
-                onBlur={() => setFocused(null)}
-                error={errors.email}
-              />
+            <Field
+              label="Email Address"
+              icon="mail-outline"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              focused={focused === 'email'}
+              onFocus={() => setFocused('email')}
+              onBlur={() => setFocused(null)}
+              error={errors.email}
+            />
 
-              <Field
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Password"
-                secureTextEntry={hidePassword}
-                focused={focused === 'password'}
-                onFocus={() => setFocused('password')}
-                onBlur={() => setFocused(null)}
-                error={errors.password}
-                trailing={
-                  <Pressable onPress={() => setHidePassword((h) => !h)} hitSlop={10}>
-                    <Ionicons
-                      name={hidePassword ? 'eye-off-outline' : 'eye-outline'}
-                      size={20}
-                      color="#5B6472"
-                    />
-                  </Pressable>
-                }
-              />
+            <Field
+              label="Password"
+              icon="lock-closed-outline"
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Enter your password"
+              secureTextEntry={hidePassword}
+              focused={focused === 'password'}
+              onFocus={() => setFocused('password')}
+              onBlur={() => setFocused(null)}
+              error={errors.password}
+              trailing={
+                <Pressable onPress={() => setHidePassword((h) => !h)} hitSlop={10}>
+                  <Ionicons
+                    name={hidePassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color="#9AA1AD"
+                  />
+                </Pressable>
+              }
+            />
 
-              <Pressable
-                onPress={handleLogin}
-                disabled={submitting}
-                android_ripple={{ color: 'rgba(255,255,255,0.2)' }}
-                style={[styles.button, submitting && styles.buttonPressed]}
+            <PressableScale onPress={handleLogin} disabled={submitting} style={styles.buttonWrap}>
+              <LinearGradient
+                colors={['#19B289', '#0E8F6F']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={[styles.button, submitting && styles.buttonDisabled]}
               >
                 {submitting ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.buttonText}>Enter</Text>
+                  <View style={styles.buttonRow}>
+                    <Text style={styles.buttonText}>LOGIN</Text>
+                    <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+                  </View>
                 )}
-              </Pressable>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
+              </LinearGradient>
+            </PressableScale>
+          </Reveal>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   )
 }
@@ -162,29 +193,23 @@ function loginErrorMessage(err: any): string {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Filled input matching the web portal's lavender fields                     */
+/* Labeled input with a leading icon, matching the card design                 */
 /* -------------------------------------------------------------------------- */
 
 interface FieldProps extends React.ComponentProps<typeof TextInput> {
+  label: string
+  icon: keyof typeof Ionicons.glyphMap
   focused?: boolean
   error?: string
   trailing?: React.ReactNode
 }
 
-const Field: React.FC<FieldProps> = ({ focused, error, trailing, style, ...rest }) => (
+const Field: React.FC<FieldProps> = ({ label, icon, focused, error, trailing, style, ...rest }) => (
   <View style={styles.fieldWrap}>
-    <View
-      style={[
-        styles.field,
-        focused && styles.fieldFocused,
-        !!error && styles.fieldError,
-      ]}
-    >
-      <TextInput
-        style={[styles.input, style]}
-        placeholderTextColor="#9AA1AD"
-        {...rest}
-      />
+    <Text style={styles.label}>{label}</Text>
+    <View style={[styles.field, focused && styles.fieldFocused, !!error && styles.fieldError]}>
+      <Ionicons name={icon} size={20} color="#13A07C" style={styles.fieldIcon} />
+      <TextInput style={[styles.input, style]} placeholderTextColor="#9AA1AD" {...rest} />
       {trailing}
     </View>
     {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -192,99 +217,112 @@ const Field: React.FC<FieldProps> = ({ focused, error, trailing, style, ...rest 
 )
 
 /* -------------------------------------------------------------------------- */
-/* Soft pastel circles framing the card. Positions/sizes are fractions of the  */
-/* screen so the spacing stays consistent across devices.                      */
-/* -------------------------------------------------------------------------- */
-
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window')
-
-type Circle = {
-  color: string
-  /** Diameter as a fraction of the screen width. */
-  size: number
-  pos: { top?: number; bottom?: number; left?: number; right?: number }
-}
-
-const CIRCLES: Circle[] = [
-  // top-left + top-right corners (symmetric)
-  { color: '#F6D78A', size: 0.6, pos: { top: -SCREEN_H * 0.05, left: -SCREEN_W * 0.2 } },
-  { color: '#9FD8F2', size: 0.62, pos: { top: -SCREEN_H * 0.05, right: -SCREEN_W * 0.2 } },
-  // right-middle accent
-  { color: '#F4B6C8', size: 0.54, pos: { top: SCREEN_H * 0.15, right: -SCREEN_W * 0.24 } },
-  // bottom-left + bottom-right corners (symmetric)
-  { color: '#BFE3B0', size: 0.62, pos: { bottom: SCREEN_H * 0.12, left: -SCREEN_W * 0.2 } },
-  { color: '#F6D78A', size: 0.56, pos: { bottom: -SCREEN_H * 0.04, right: -SCREEN_W * 0.18 } },
-  // bottom-center accent
-  { color: '#A8E0D8', size: 0.58, pos: { bottom: -SCREEN_H * 0.05, left: SCREEN_W * 0.26 } },
-]
-
-const DecorativeBackground = () => (
-  <View style={StyleSheet.absoluteFill} pointerEvents="none">
-    {CIRCLES.map((c, i) => {
-      const d = SCREEN_W * c.size
-      return <View key={i} style={[styles.blob, c.pos, { width: d, height: d, backgroundColor: c.color }]} />
-    })}
-  </View>
-)
-
-/* -------------------------------------------------------------------------- */
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#FFFFFF' },
-  safe: { flex: 1 },
+  root: { flex: 1, backgroundColor: '#13A07C' },
   flex: { flex: 1 },
-  scroll: { flexGrow: 1, justifyContent: 'center', padding: 24 },
+  // Whole section vertically centered. The splash estimates this centered
+  // header position so the hand-off still lands close (see app/index.tsx).
+  scroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 22 },
 
-  blob: { position: 'absolute', borderRadius: 9999, opacity: 0.55 },
-
-  card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.92)',
-    borderRadius: 18,
-    // Equal gap on all four sides between the card edge and its content
-    padding: 22,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.7)',
-    // Elevation / shadow so the glass card lifts off the backdrop
-    shadowColor: '#0E7A60',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.18,
-    shadowRadius: 24,
-    elevation: 10,
+  // Soft lighter-green halos textured into the header.
+  haloLg: {
+    position: 'absolute',
+    right: -70,
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: 'rgba(255,255,255,0.08)',
   },
-  logoWrap: { alignItems: 'center', marginBottom: 18 },
-  title: {
-    color: '#13A07C',
-    fontFamily: Platform.select({ android: 'Roboto', default: 'System' }),
-    fontSize: 22,
-    fontWeight: '700',
+  haloSm: {
+    position: 'absolute',
+    left: -50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+  },
+
+  // Header
+  header: { alignItems: 'center', marginBottom: 26 },
+  iconTile: {
+    width: 84,
+    height: 84,
+    borderRadius: 22,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    shadowColor: '#063D2F',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 18,
+    elevation: 8,
+  },
+  wordmark: { marginTop: 16 },
+  brandTitle: {
+    color: '#FFFFFF',
+    fontSize: 28,
+    fontWeight: '800',
+    marginTop: 2,
+    letterSpacing: 0.3,
+    includeFontPadding: false,
     textAlign: 'center',
-    marginBottom: 26,
   },
 
-  fieldWrap: { marginBottom: 16 },
+  // Card
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28,
+    padding: 24,
+    shadowColor: '#063D2F',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.22,
+    shadowRadius: 28,
+    elevation: 14,
+  },
+  welcome: {
+    color: '#0E1726',
+    fontSize: 26,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: '#7A8496',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 6,
+    marginBottom: 24,
+  },
+
+  // Fields
+  fieldWrap: { marginBottom: 18 },
+  label: { color: '#2B3445', fontSize: 14, fontWeight: '700', marginBottom: 8 },
   field: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 54,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    backgroundColor: '#F1F5F4',
+    height: 56,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
-    borderColor: 'transparent',
+    borderColor: '#E7EBF0',
   },
-  fieldFocused: { borderColor: '#13A07C', backgroundColor: '#EAF6F1' },
+  fieldFocused: { borderColor: '#13A07C', backgroundColor: '#F4FBF8' },
   fieldError: { borderColor: '#EF4444' },
+  fieldIcon: { marginRight: 10 },
   input: { flex: 1, fontSize: 16, color: '#1B2233', paddingVertical: 0 },
   errorText: { color: '#DC2626', fontSize: 12, marginTop: 6, marginLeft: 4 },
 
+  // Button
+  buttonWrap: { marginTop: 8, borderRadius: 30, overflow: 'hidden' },
   button: {
-    height: 54,
-    borderRadius: 10,
-    backgroundColor: '#13A07C',
+    height: 56,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
   },
-  buttonPressed: { opacity: 0.85 },
-  buttonText: { color: '#FFFFFF', fontSize: 17, fontWeight: '700' },
+  buttonDisabled: { opacity: 0.85 },
+  buttonRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', letterSpacing: 1 },
 })

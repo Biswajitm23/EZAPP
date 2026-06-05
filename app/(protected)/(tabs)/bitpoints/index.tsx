@@ -1,15 +1,38 @@
 import React from 'react'
-import { PointsView } from '@/components'
+import { useQuery } from '@tanstack/react-query'
+import { RewardsView } from '@/components'
+import { bitpointsService } from '@/api'
 
 /**
- * Bitpoints — monthly Bitpoints balance. Static placeholder data until the API
- * is wired (mirrors the web portal's Bitpoints table).
+ * Bitpoints — the employee's Bitpoints balance + full history.
+ *
+ * Live data from GET /bitpoints (Bearer, newest-first). No static/fallback data.
+ * Presentation is the shared {@link RewardsView}; the star icon matches the
+ * Bitpoints bottom-nav tab.
  */
 export default function BitpointsScreen() {
+  const query = useQuery({
+    queryKey: ['bitpoints'],
+    queryFn: ({ signal }) => bitpointsService.getBitpoints(signal),
+    retry: false,
+  })
+
   return (
-    <PointsView
-      title="Bitpoints"
-      rows={[{ month: 'March 2026', balance: '120' }]}
+    <RewardsView
+      kicker="Rewards & Recognition"
+      title="BitPoints"
+      cardLabel="Current Points"
+      unit="BitPoints"
+      icon="star"
+      valueKey="cumulative_cash_via_bitpoints"
+      rows={query.data?.bitpoints ?? []}
+      isLoading={query.isLoading}
+      isError={query.isError}
+      onRetry={query.refetch}
+      onRefresh={query.refetch}
+      refreshing={query.isRefetching}
+      errorTitle="Couldn't load Bitpoints"
+      emptyText="No Bitpoints history yet."
     />
   )
 }

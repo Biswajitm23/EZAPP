@@ -42,9 +42,14 @@ export default function RootLayout() {
           <Provider store={store}>
             <GestureHandlerRootView style={{ flex: 1 }}>
               <FeedbackProvider>
-                <Stack screenOptions={{ headerShown: false }}>
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    animation: 'fade',
+                    animationDuration: 280,
+                  }}
+                >
                   <Stack.Screen name="index" />
-                  <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
                   <Stack.Screen name="login" options={{ gestureEnabled: false }} />
                   <Stack.Screen name="(protected)" options={{ gestureEnabled: false }} />
                 </Stack>

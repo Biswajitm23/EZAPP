@@ -17,12 +17,17 @@ export const ENDPOINTS = {
   profile: {
     get: 'profile',
     update: 'profile/update',
-    // Multipart upload for the profile photo. NOTE: confirm this route with the
-    // backend — /profile/update does NOT accept the picture (text fields only).
-    picture: 'profile/picture',
+    // Multipart upload/remove for the profile photo (field `profile_image`).
+    // Upload: send the file. Remove: send an empty string. NOT JSON.
+    picture: 'upload-profile-image',
   },
   directory: {
     list: 'employees',
     detail: (id: string | number) => `employees/${id}`,
+  },
+  // Full bitpoint + incentive history (newest first). Bearer auth. One endpoint
+  // feeds both screens — each row carries the bitpoints and incentives values.
+  bitpoints: {
+    list: 'bitpoints',
   },
 } as const

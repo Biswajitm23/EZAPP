@@ -42,8 +42,11 @@ export default function ProtectedLayout() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="content/[id]" />
+      <Stack.Screen name="(tabs)" options={{ animation: 'fade', animationDuration: 240 }} />
+      <Stack.Screen
+        name="content/[id]"
+        options={{ animation: 'slide_from_right', animationDuration: 320, gestureEnabled: true }}
+      />
     </Stack>
   )
 }

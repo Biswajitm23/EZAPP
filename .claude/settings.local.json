@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(java -version)"
+      "Bash(java -version)",
+      "PowerShell(npx tsc --noEmit 2>&1)",
+      "PowerShell(npx tsc --noEmit; \"EXIT=$LASTEXITCODE\")"
     ]
   }
 }

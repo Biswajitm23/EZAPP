@@ -1,7 +1,8 @@
 import React from 'react'
-import { Pressable, Text, ActivityIndicator, StyleSheet, ViewStyle, View } from 'react-native'
+import { Text, ActivityIndicator, StyleSheet, ViewStyle, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useTheme } from '@/constants/theme'
+import { PressableScale } from './motion'
 
 type Variant = 'primary' | 'secondary' | 'outline'
 
@@ -26,7 +27,7 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   style,
 }) => {
-  const { colors, borderRadius, layout } = useTheme()
+  const { colors, layout } = useTheme()
   const isDisabled = disabled || loading
 
   const content = (
@@ -48,16 +49,16 @@ export const Button: React.FC<ButtonProps> = ({
 
   if (variant === 'primary') {
     return (
-      <Pressable onPress={onPress} disabled={isDisabled} style={[{ opacity: isDisabled ? 0.6 : 1 }, style]}>
+      <PressableScale onPress={onPress} disabled={isDisabled} style={[{ opacity: isDisabled ? 0.6 : 1 }, style]}>
         <LinearGradient
           colors={colors.brand.gradient}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
-          style={[styles.base, { height: layout.buttonHeight, borderRadius: borderRadius.md }]}
+          style={[styles.base, { height: layout.buttonHeight }]}
         >
           {content}
         </LinearGradient>
-      </Pressable>
+      </PressableScale>
     )
   }
 
@@ -67,23 +68,23 @@ export const Button: React.FC<ButtonProps> = ({
       : { backgroundColor: colors.background.secondary }
 
   return (
-    <Pressable
+    <PressableScale
       onPress={onPress}
       disabled={isDisabled}
       style={[
         styles.base,
         variantStyle,
-        { height: layout.buttonHeight, borderRadius: borderRadius.md, opacity: isDisabled ? 0.6 : 1 },
+        { height: layout.buttonHeight, opacity: isDisabled ? 0.6 : 1 },
         style,
       ]}
     >
       {content}
-    </Pressable>
+    </PressableScale>
   )
 }
 
 const styles = StyleSheet.create({
-  base: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
+  base: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, borderRadius: 30 },
   content: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   label: { fontSize: 16, fontWeight: '600' },
 })

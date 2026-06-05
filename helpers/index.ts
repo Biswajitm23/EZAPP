@@ -4,7 +4,6 @@
 
 export * from './auth'
 export * from './image'
-export * from './onboarding'
 
 /** Returns the initials for a name, e.g. "Ayan Roy" -> "AR". */
 export const initialsOf = (name?: string | null): string => {

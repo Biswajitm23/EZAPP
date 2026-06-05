@@ -13,7 +13,7 @@ export default function TabsLayout() {
   return (
     <Tabs
       tabBar={(props) => <BottomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, animation: 'fade' }}
     >
       <Tabs.Screen name="dashboard/index" options={{ title: 'Home' }} />
       <Tabs.Screen name="bitpoints/index" options={{ title: 'Bitpoints' }} />

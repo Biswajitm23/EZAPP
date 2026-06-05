@@ -163,10 +163,56 @@ export interface ProfileUpdateResponse {
   profile: ProfileApiData
 }
 
-/** Response from the profile-picture upload (multipart). */
+/**
+ * Response from the profile-image upload/remove (multipart, POST
+ * /upload-profile-image). On upload, `profile_picture` is the stored filename
+ * and `profile_picture_url` the full URL; on remove, both are "".
+ */
 export interface ProfilePictureResponse {
   status: boolean | number
   message: string
   profile?: ProfileApiData
-  profile_picture?: string // stored filename, when returned standalone
+  profile_picture?: string // stored filename ("" when removed)
+  profile_picture_url?: string // full URL ("" when removed)
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bitpoints API ( GET /bitpoints )                                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A single bitpoint / incentive history entry. The backend field names aren't
+ * finalised, so the screen reads defensively (points ?? balance ?? amount,
+ * month ?? date, description ?? reason). Adjust once the contract is confirmed.
+ */
+export interface BitpointRow {
+  id?: string | number
+  /** Issue period — e.g. issue_month "3" or "March", issue_year "2026". */
+  issue_month?: string | number
+  issue_year?: string | number
+  /** Running cumulative cash earned via bitpoints (Bitpoints page value). */
+  cumulative_cash_via_bitpoints?: string | number
+  /** Incentive value for the period (Incentives page value). */
+  incentives?: string | number
+  // Legacy / fallback field names (read defensively):
+  month?: string
+  date?: string
+  points?: string | number
+  balance?: string | number
+  amount?: string | number
+  description?: string
+  reason?: string
+  type?: string
+}
+
+/**
+ * Full response from GET /bitpoints — `bitpoints` is newest-first. Each row
+ * carries both the bitpoints value (`cumulative_cash_via_bitpoints`) and the
+ * `incentives` value, so the same endpoint feeds both the Bitpoints and
+ * Incentives screens.
+ */
+export interface BitpointsResponse {
+  status: boolean | number
+  count: number
+  bitpoints: BitpointRow[]
 }
