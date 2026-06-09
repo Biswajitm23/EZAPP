@@ -33,6 +33,7 @@
       "expo-router",
       "expo-secure-store",
       [
+<<<<<<< HEAD
         "expo-splash-screen",
         {
           "image": "./assets/images/app-icon.png",
@@ -42,11 +43,14 @@
         }
       ],
       [
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
         "expo-image-picker",
         {
           "photosPermission": "Employee Zone needs access to your photos so you can set a profile picture.",
           "cameraPermission": "Employee Zone needs access to your camera so you can take a profile picture."
         }
+<<<<<<< HEAD
       ],
       [
         "expo-build-properties",
@@ -60,6 +64,9 @@
       "./plugins/withAndroidArchitectures",
       "expo-video",
       "expo-web-browser"
+=======
+      ]
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     ],
     "experiments": {
       "typedRoutes": true

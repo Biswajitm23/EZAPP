@@ -6,7 +6,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   ScreenContainer,
   InitialAvatar,
+<<<<<<< HEAD
   SkeletonProfile,
+=======
+  Loader,
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   EmptyState,
   Button,
   DatePickerModal,
@@ -74,6 +78,10 @@ export default function ProfileScreen() {
     setForm({ fname: p.fname, lname: p.lname, phone: p.phone, dob: p.dob, gender: capitalize(p.gender), address: p.address })
   useEffect(() => {
     if (data?.profile) seedForm(data.profile)
+<<<<<<< HEAD
+=======
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   }, [data?.profile])
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }))
@@ -255,11 +263,14 @@ export default function ProfileScreen() {
     })
   }
 
+<<<<<<< HEAD
   const handleBack = () => {
     if (router.canGoBack()) router.back()
     else router.replace('/(protected)/(tabs)/dashboard')
   }
 
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   const handleMenu = async () => {
     const choice = await sheet({
       title: 'My Profile',
@@ -275,8 +286,13 @@ export default function ProfileScreen() {
   // --- States ---------------------------------------------------------------
   if (status === 401 || (query.isLoading && !data)) {
     return (
+<<<<<<< HEAD
       <ScreenContainer edges={['top']}>
         <SkeletonProfile />
+=======
+      <ScreenContainer>
+        <Loader />
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
       </ScreenContainer>
     )
   }
@@ -324,9 +340,12 @@ export default function ProfileScreen() {
         {/* Header — centered "Account / My Profile" with a menu button */}
         <Reveal index={0}>
           <View style={styles.header}>
+<<<<<<< HEAD
             <PressableScale style={styles.backBtn} onPress={handleBack} activeScale={0.9} hitSlop={6}>
               <Ionicons name="chevron-back" size={20} color="#1B2233" />
             </PressableScale>
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
             <View style={styles.headerCenter}>
               <Text style={styles.kicker}>Account</Text>
               <Text style={styles.title}>My Profile</Text>
@@ -572,6 +591,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+<<<<<<< HEAD
   backBtn: {
     position: 'absolute',
     left: 0,
@@ -583,6 +603,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 
   // Identity block
   identity: { alignItems: 'center', marginTop: 6, marginBottom: 22 },

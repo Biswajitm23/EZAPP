@@ -216,6 +216,7 @@ export interface BitpointsResponse {
   count: number
   bitpoints: BitpointRow[]
 }
+<<<<<<< HEAD
 
 /* -------------------------------------------------------------------------- */
 /* Collaboration ("Collab Days") API ( GET /collaboration )                   */
@@ -497,3 +498,5 @@ export interface GetDetailParams {
   slug?: string
   id?: string | number
 }
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43

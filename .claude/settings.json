@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash(out=\"C:\\\\\\\\Users\\\\\\\\Biswajit\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\d--CLIENT-Bitpastel-Employee-Zone-App-02-06-2026-EMPAPP\\\\\\\\76f792b2-7c8e-42c2-9920-50ac8b7b3c10\\\\\\\\tasks\\\\\\\\b1jn536u2.output\"; for i in $\\(seq 1 60\\); do if grep -qiE \"Android Bundled|ERROR |Bundling failed|Unable to resolve\" \"$out\"; then break; fi; sleep 4; done; cat \"$out\"; echo \"=== screenshot ===\"; adb -s emulator-5554 exec-out screencap -p > \"C:\\\\\\\\Users\\\\\\\\Biswajit\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\empapp_screen2.png\"; echo done)",
+      "Bash(adb -s emulator-5554 reverse tcp:8081 tcp:8081)",
+      "Bash(adb -s emulator-5554 reverse --list)",
+      "Bash(adb -s emulator-5554 shell am start -a android.intent.action.VIEW -d \"exp://127.0.0.1:8081\")",
+      "Bash(npx tsc *)",
+      "Bash(echo \"=== exit: $? ===\")",
+      "Bash(ls \"C:\\\\\\\\Users\\\\\\\\Biswajit\\\\\\\\.claude\\\\\\\\projects\\\\\\\\d--CLIENT-Bitpastel-Employee-Zone-App-02-06-2026-EMPAPP\\\\\\\\memory\\\\\\\\\" 2>&1)",
+      "Read(//c/Users/Biswajit/.claude/projects/d--CLIENT-Bitpastel-Employee-Zone-App-02-06-2026-EMPAPP/memory/**)",
+      "Bash(node -e ' *)",
+      "Bash(echo \"=== tsc exit: $? ===\")",
+      "Bash(adb -s emulator-5554 shell wm size)",
+      "Bash(adb -s emulator-5554 shell input tap 540 1346)",
+      "Bash(adb -s emulator-5554 shell input keyevent 123)",
+      "Bash(adb -s emulator-5554 shell input keyevent 67)",
+      "Bash(adb -s emulator-5554 shell input tap 598 2274)",
+      "Bash(adb -s emulator-5554 shell input text 'z^B!d56o6x\\\\$w')"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Biswajit\\AppData\\Local\\Temp"
+    ]
+  }
+}

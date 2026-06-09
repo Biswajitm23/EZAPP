@@ -27,10 +27,15 @@ type IoniconName = keyof typeof Ionicons.glyphMap
 /** Active / inactive icon + short label per tab route. */
 const TAB_CONFIG: Record<string, { active: IoniconName; inactive: IoniconName; label: string }> = {
   'dashboard/index': { active: 'home', inactive: 'home-outline', label: 'Home' },
+<<<<<<< HEAD
   // The bitpoints/ route is repurposed to host the Collab Days screen (route
   // path unchanged; only the label + calendar icon differ).
   'bitpoints/index': { active: 'calendar', inactive: 'calendar-outline', label: 'Collab Days' },
   'incentives/index': { active: 'gift', inactive: 'gift-outline', label: 'Reward' },
+=======
+  'bitpoints/index': { active: 'star', inactive: 'star-outline', label: 'Bitpoints' },
+  'incentives/index': { active: 'gift', inactive: 'gift-outline', label: 'Incentives' },
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   'profile/index': { active: 'person', inactive: 'person-outline', label: 'Profile' },
 }
 

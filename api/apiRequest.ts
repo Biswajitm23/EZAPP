@@ -26,9 +26,13 @@ export const apiRequest = async <T = any>({
   signal,
 }: ApiRequestParams): Promise<T> => {
   try {
+<<<<<<< HEAD
     if (__DEV__) {
       console.log(`API Request → ${method} ${url}`)
     }
+=======
+    console.log(`API Request → ${method} ${url}`)
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     const res = await axiosInstance({
       url,
       method,
@@ -38,6 +42,7 @@ export const apiRequest = async <T = any>({
       ...(timeout && { timeout }),
       ...(signal && { signal }),
     })
+<<<<<<< HEAD
     if (__DEV__) {
       console.log(
         'API Response:\n' +
@@ -61,6 +66,27 @@ export const apiRequest = async <T = any>({
           )
       )
     }
+=======
+    console.log(
+      'API Response:\n' +
+        JSON.stringify({ url, method, status: res.status, data: res.data }, null, 2)
+    )
+    return res.data as T
+  } catch (error: any) {
+    console.log(
+      'API Error Response:\n' +
+        JSON.stringify(
+          {
+            url,
+            status: error?.response?.status,
+            data: error?.response?.data,
+            message: error?.message,
+          },
+          null,
+          2
+        )
+    )
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     // Re-throw so callers (components / react-query) can handle it.
     throw error
   }

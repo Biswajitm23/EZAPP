@@ -11,6 +11,11 @@ import type {
 
 /**
  * Profile + Directory service (Employee Zone v1 scope).
+<<<<<<< HEAD
+=======
+ *
+ * TODO: align field mapping with the real backend contract.
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
  */
 export const profileService = {
   /**

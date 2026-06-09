@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useCallback, useMemo, useState } from 'react'
 import { View, Text, StyleSheet, FlatList, RefreshControl, ActivityIndicator } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
@@ -8,13 +9,31 @@ import { Skeleton, SkeletonRow } from './Skeleton'
 import { EmptyState } from './EmptyState'
 import { Button } from './Button'
 import { Reveal } from './motion'
+=======
+import React, { useMemo } from 'react'
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native'
+import { Image } from 'expo-image'
+import { useRouter } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
+import { ScreenContainer } from './ScreenContainer'
+import { InitialAvatar } from './InitialAvatar'
+import { Loader } from './Loader'
+import { EmptyState } from './EmptyState'
+import { Button } from './Button'
+import { PressableScale, Reveal } from './motion'
+import { useAuth } from '@/hooks/useAuth'
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 import type { BitpointRow } from '@/api/types'
 
 type IoniconName = keyof typeof Ionicons.glyphMap
 
+<<<<<<< HEAD
 /** How many history rows to show before infinite-scroll loads the next page. */
 const PAGE_SIZE = 10
 
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 /** "1250" -> "1,250" without relying on Intl (Hermes-safe). */
 const withCommas = (n: number) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
@@ -79,6 +98,7 @@ interface RewardsViewProps {
 }
 
 /**
+<<<<<<< HEAD
  * Shared Rewards screen used by the Incentives tab: a header (kicker + title +
  * profile avatar), a brand-green stats card with the running total, and a
  * staggered history list. Live-data only — no static/fallback rows; shows a
@@ -87,6 +107,12 @@ interface RewardsViewProps {
  * The history list renders {@link PAGE_SIZE} rows up front and grows in
  * PAGE_SIZE steps as the user scrolls (onEndReached), so very long histories
  * don't mount every row at once.
+=======
+ * Shared Rewards screen used by Bitpoints and Incentives: a header (kicker +
+ * title + profile avatar), a brand-green stats card with the running total, and
+ * a staggered history list. Live-data only — no static/fallback rows; shows a
+ * spinner while loading, an empty state with retry on error.
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
  */
 export const RewardsView: React.FC<RewardsViewProps> = ({
   kicker,
@@ -104,14 +130,20 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
   errorTitle,
   emptyText,
 }) => {
+<<<<<<< HEAD
   // How many history rows are visible (infinite scroll grows this in PAGE_SIZE steps).
   const [visible, setVisible] = useState(PAGE_SIZE)
+=======
+  const router = useRouter()
+  const { user } = useAuth()
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 
   // Drop empty rows (no period), then: Current = the latest month (newest-first);
   // History = everything else, so the latest period isn't duplicated in the list.
   const validRows = useMemo(() => rows.filter(hasData), [rows])
   const total = useMemo(() => (validRows.length ? pointsOf(validRows[0], valueKey) : 0), [validRows, valueKey])
   const history = useMemo(() => validRows.slice(1), [validRows])
+<<<<<<< HEAD
   const pagedHistory = useMemo(() => history.slice(0, visible), [history, visible])
   const canLoadMore = visible < history.length
 
@@ -144,6 +176,16 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
             <SkeletonRow key={i} />
           ))}
         </View>
+=======
+
+  const avatar = user?.profile_image_url
+  const goProfile = () => router.push('/(protected)/(tabs)/profile')
+
+  if (isLoading) {
+    return (
+      <ScreenContainer>
+        <Loader />
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
       </ScreenContainer>
     )
   }
@@ -163,6 +205,7 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
     )
   }
 
+<<<<<<< HEAD
   const renderHeader = () => (
     <>
       {/* Header */}
@@ -239,12 +282,67 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#13A07C" colors={['#13A07C']} />
         }
         ListEmptyComponent={
+=======
+  return (
+    <ScreenContainer edges={['top']}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#13A07C" colors={['#13A07C']} />
+        }
+      >
+        {/* Header */}
+        <Reveal index={0}>
+          <View style={styles.header}>
+            <View style={styles.headerText}>
+              <Text style={styles.kicker}>{kicker}</Text>
+              <Text style={styles.title}>{title}</Text>
+            </View>
+            <PressableScale onPress={goProfile} activeScale={0.9} hitSlop={6}>
+              {avatar ? (
+                <Image source={{ uri: avatar }} style={styles.avatar} />
+              ) : (
+                <InitialAvatar name={user?.name ?? 'Employee'} size={48} />
+              )}
+            </PressableScale>
+          </View>
+        </Reveal>
+
+        {/* Stats card */}
+        <Reveal index={1}>
+          <LinearGradient
+            colors={['#1AB996', '#13A07C', '#0C6E57']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.card}
+          >
+            <View style={styles.cardTop}>
+              <Text style={styles.cardLabel}>{cardLabel}</Text>
+              <View style={styles.iconTile}>
+                <Ionicons name={icon} size={22} color="#FFD45F" />
+              </View>
+            </View>
+
+            <Text style={styles.bigNumber}>{withCommas(total)}</Text>
+            <Text style={styles.cardSub}>{unit ?? title}</Text>
+          </LinearGradient>
+        </Reveal>
+
+        {/* History */}
+        <Reveal index={2}>
+          <Text style={styles.sectionTitle}>History</Text>
+        </Reveal>
+
+        {history.length === 0 ? (
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
           <Reveal index={3}>
             <View style={styles.emptyHistory}>
               <Ionicons name="time-outline" size={36} color="#C2C7CF" />
               <Text style={styles.emptyHistoryText}>{emptyText}</Text>
             </View>
           </Reveal>
+<<<<<<< HEAD
         }
         ListFooterComponent={
           canLoadMore ? (
@@ -254,6 +352,37 @@ export const RewardsView: React.FC<RewardsViewProps> = ({
           ) : null
         }
       />
+=======
+        ) : (
+          history.map((row, i) => {
+            const pts = pointsOf(row, valueKey)
+            const desc = descOf(row)
+            return (
+              <Reveal key={row.id ?? i} index={3 + i}>
+                <View style={styles.historyRow}>
+                  <View style={styles.coin}>
+                    <Ionicons name={icon} size={18} color="#13A07C" />
+                  </View>
+                  <View style={styles.historyText}>
+                    <Text style={styles.historyLabel} numberOfLines={1}>
+                      {labelOf(row)}
+                    </Text>
+                    {!!desc && (
+                      <Text style={styles.historyDesc} numberOfLines={1}>
+                        {desc}
+                      </Text>
+                    )}
+                  </View>
+                  <Text style={[styles.historyPoints, pts < 0 && styles.historyPointsNeg]}>
+                    {withCommas(pts)}
+                  </Text>
+                </View>
+              </Reveal>
+            )
+          })
+        )}
+      </ScrollView>
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     </ScreenContainer>
   )
 }
@@ -321,6 +450,10 @@ const styles = StyleSheet.create({
 
   emptyHistory: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40, gap: 12 },
   emptyHistoryText: { fontSize: 14, color: '#8A92A0' },
+<<<<<<< HEAD
 
   footer: { paddingVertical: 16, alignItems: 'center' },
 })
+=======
+})
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43

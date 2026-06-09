@@ -83,9 +83,13 @@ export const refreshAccessToken = (): Promise<string | null> => {
         await saveRotatedTokens(data.access_token, data.refresh_token)
         return data.access_token
       } catch {
+<<<<<<< HEAD
         if (__DEV__) {
           console.log('[auth] Token refresh failed — clearing session')
         }
+=======
+        console.log('[auth] Token refresh failed — clearing session')
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
         await SecureStore.deleteItemAsync(AUTH_STORAGE_KEY).catch(() => {})
         // Mark the session expired so a mounted screen/layout can react (toast
         // + redirect to login), matching the OLD APP's interceptor behaviour.

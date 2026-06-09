@@ -1,6 +1,11 @@
 import React from 'react'
+<<<<<<< HEAD
 import { StatusBar, View, Text, ScrollView, Pressable, StyleSheet } from 'react-native'
 import { Stack, type ErrorBoundaryProps } from 'expo-router'
+=======
+import { StatusBar } from 'react-native'
+import { Stack } from 'expo-router'
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -36,7 +41,11 @@ function ThemedStatusBar() {
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
+<<<<<<< HEAD
       <ThemeProvider defaultMode="light">
+=======
+      <ThemeProvider defaultMode="system">
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
         <ThemedStatusBar />
         <QueryClientProvider client={queryClient}>
           <Provider store={store}>
@@ -61,6 +70,7 @@ export default function RootLayout() {
     </SafeAreaProvider>
   )
 }
+<<<<<<< HEAD
 
 /**
  * Root error boundary (expo-router picks this up automatically). Converts an
@@ -96,3 +106,5 @@ const ebStyles = StyleSheet.create({
   button: { marginTop: 8, height: 48, paddingHorizontal: 28, borderRadius: 30, backgroundColor: '#13A07C', alignItems: 'center', justifyContent: 'center' },
   buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
 })
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43

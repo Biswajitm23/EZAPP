@@ -41,6 +41,7 @@ export const clearStoredAuth = async (): Promise<void> => {
     console.error('[auth] Failed to clear session:', err)
   }
 }
+<<<<<<< HEAD
 
 /**
  * "Remember me" credentials.
@@ -84,3 +85,5 @@ export const clearRememberedCredentials = async (): Promise<void> => {
     console.error('[auth] Failed to clear remembered credentials:', err)
   }
 }
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43

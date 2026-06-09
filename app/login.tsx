@@ -1,24 +1,35 @@
+<<<<<<< HEAD
 import React, { useEffect, useRef, useState } from 'react'
+=======
+import React, { useState } from 'react'
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 import {
   View,
   Text,
   TextInput,
+<<<<<<< HEAD
   Image,
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Pressable,
   ActivityIndicator,
+<<<<<<< HEAD
   Keyboard,
   findNodeHandle,
   UIManager,
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { LinearGradient } from 'expo-linear-gradient'
+<<<<<<< HEAD
 import { PressableScale, Reveal, useFeedback } from '@/components'
 import { useAuth } from '@/hooks/useAuth'
 import {
@@ -35,6 +46,30 @@ const AppLogo = require('../assets/images/app-icon.png')
 const BACKDROP = ['#13A07C', '#16928C', '#2E6FB5'] as const
 
 
+=======
+import AppLogo from '../assets/images/App_logo.svg'
+import Bitpastel from '../assets/images/bitpastel.svg'
+import { PressableScale, Reveal, useFeedback } from '@/components'
+import { useAuth } from '@/hooks/useAuth'
+import { isValidEmail } from '@/helpers'
+import { authService } from '@/api'
+
+// Vertical brand wash behind everything: brand green easing into a soft blue toe.
+const BACKDROP = ['#13A07C', '#16928C', '#2E6FB5'] as const
+
+/**
+ * Employee Zone login.
+ *
+ * Layout mirrors the Figma "Employee Zone App Design":
+ *   - a green → blue gradient backdrop,
+ *   - a header (app icon, "BITPASTEL", "Employee Zone") sitting on the green,
+ *   - a floating white card with a centered "Welcome Back" heading, labeled
+ *     email/password fields, and a gradient LOGIN button.
+ *
+ * The form + validation are wired locally; the network call goes through
+ * `authService.login` (see api/services/authService.ts).
+ */
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 export default function Login() {
   const router = useRouter()
   const insets = useSafeAreaInsets()
@@ -47,6 +82,7 @@ export default function Login() {
   const [focused, setFocused] = useState<'email' | 'password' | null>(null)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const [submitting, setSubmitting] = useState(false)
+<<<<<<< HEAD
   const [remember, setRemember] = useState(false)
 
   // Restore "Remember me" credentials saved on a previous sign-in. If a record
@@ -86,6 +122,8 @@ export default function Login() {
       )
     })
   }
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 
   const validate = () => {
     const next: typeof errors = {}
@@ -97,11 +135,15 @@ export default function Login() {
   }
 
   const handleLogin = async () => {
+<<<<<<< HEAD
     Keyboard.dismiss()
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     if (!validate()) return
     setSubmitting(true)
     try {
       const result = await authService.login({ email: email.trim(), password })
+<<<<<<< HEAD
       // Persist or drop the remembered credentials based on the checkbox. Done
       // on success only, so a failed attempt never overwrites a saved record.
       if (remember) {
@@ -131,6 +173,12 @@ export default function Login() {
       })
 
       return
+=======
+      await signIn(result)
+      const first = result?.user?.name?.split(' ')[0]
+      toast.success(first ? `Welcome back, ${first}! 👋` : 'Logged in successfully.')
+      router.replace('/(protected)/(tabs)/dashboard')
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     } catch (err: any) {
       toast.error(loginErrorMessage(err))
     } finally {
@@ -153,6 +201,7 @@ export default function Login() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView
+<<<<<<< HEAD
           ref={scrollRef}
           contentContainerStyle={[
             styles.scroll,
@@ -178,6 +227,33 @@ export default function Login() {
           <Reveal index={1} style={[styles.card, { paddingBottom: insets.bottom + 24 }]}>
             <Field
               label="Email"
+=======
+          contentContainerStyle={[
+            styles.scroll,
+            { paddingTop: insets.top + 36, paddingBottom: insets.bottom + 28 },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header — app icon + brand. Static (no entrance): the animated splash
+              flies this exact lockup into place, so re-animating it here would
+              break the hand-off. */}
+          <View style={styles.header}>
+            <View style={styles.iconTile}>
+              <AppLogo width={84} height={84} />
+            </View>
+            <Bitpastel width={90} height={40} style={styles.wordmark} />
+            <Text style={styles.brandTitle}>Employee Zone</Text>
+          </View>
+
+          {/* Login card */}
+          <Reveal index={1} style={styles.card}>
+            <Text style={styles.welcome}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Sign in to your account</Text>
+
+            <Field
+              label="Email Address"
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
               icon="mail-outline"
               value={email}
               onChangeText={setEmail}
@@ -185,6 +261,7 @@ export default function Login() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+<<<<<<< HEAD
               autoComplete="email"
               textContentType="emailAddress"
               importantForAutofill="yes"
@@ -192,6 +269,11 @@ export default function Login() {
               onFocus={() => setFocused('email')}
               onBlur={() => setFocused(null)}
               onFocusScroll={scrollFieldIntoView}
+=======
+              focused={focused === 'email'}
+              onFocus={() => setFocused('email')}
+              onBlur={() => setFocused(null)}
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
               error={errors.email}
             />
 
@@ -202,12 +284,18 @@ export default function Login() {
               onChangeText={setPassword}
               placeholder="Enter your password"
               secureTextEntry={hidePassword}
+<<<<<<< HEAD
               autoComplete="password"
               textContentType="password"
               focused={focused === 'password'}
               onFocus={() => setFocused('password')}
               onBlur={() => setFocused(null)}
               onFocusScroll={scrollFieldIntoView}
+=======
+              focused={focused === 'password'}
+              onFocus={() => setFocused('password')}
+              onBlur={() => setFocused(null)}
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
               error={errors.password}
               trailing={
                 <Pressable onPress={() => setHidePassword((h) => !h)} hitSlop={10}>
@@ -220,6 +308,7 @@ export default function Login() {
               }
             />
 
+<<<<<<< HEAD
             <Pressable
               onPress={() => setRemember((r) => !r)}
               hitSlop={8}
@@ -242,6 +331,24 @@ export default function Login() {
                   <Text style={styles.buttonText}>Log In</Text>
                 )}
               </View>
+=======
+            <PressableScale onPress={handleLogin} disabled={submitting} style={styles.buttonWrap}>
+              <LinearGradient
+                colors={['#19B289', '#0E8F6F']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={[styles.button, submitting && styles.buttonDisabled]}
+              >
+                {submitting ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <View style={styles.buttonRow}>
+                    <Text style={styles.buttonText}>LOGIN</Text>
+                    <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+                  </View>
+                )}
+              </LinearGradient>
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
             </PressableScale>
           </Reveal>
         </ScrollView>
@@ -278,6 +385,7 @@ interface FieldProps extends React.ComponentProps<typeof TextInput> {
   focused?: boolean
   error?: string
   trailing?: React.ReactNode
+<<<<<<< HEAD
   /** Scrolls this field into view above the keyboard; receives its node handle. */
   onFocusScroll?: (node: number | null) => void
 }
@@ -314,15 +422,36 @@ const Field: React.FC<FieldProps> = ({
     </View>
   )
 }
+=======
+}
+
+const Field: React.FC<FieldProps> = ({ label, icon, focused, error, trailing, style, ...rest }) => (
+  <View style={styles.fieldWrap}>
+    <Text style={styles.label}>{label}</Text>
+    <View style={[styles.field, focused && styles.fieldFocused, !!error && styles.fieldError]}>
+      <Ionicons name={icon} size={20} color="#13A07C" style={styles.fieldIcon} />
+      <TextInput style={[styles.input, style]} placeholderTextColor="#9AA1AD" {...rest} />
+      {trailing}
+    </View>
+    {error ? <Text style={styles.errorText}>{error}</Text> : null}
+  </View>
+)
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 
 /* -------------------------------------------------------------------------- */
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#13A07C' },
   flex: { flex: 1 },
+<<<<<<< HEAD
   // Header sits on the gradient at the top; the white card flows below it and
   // grows to fill the remaining space (rounded top corners overlay the backdrop).
   scroll: { flexGrow: 1, justifyContent: 'flex-start' },
+=======
+  // Whole section vertically centered. The splash estimates this centered
+  // header position so the hand-off still lands close (see app/index.tsx).
+  scroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 22 },
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 
   // Soft lighter-green halos textured into the header.
   haloLg: {
@@ -342,6 +471,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.07)',
   },
 
+<<<<<<< HEAD
   // Header (on the gradient)
   header: { alignItems: 'center', paddingHorizontal: 22, paddingBottom: 30 },
   iconTile: {
@@ -349,6 +479,15 @@ const styles = StyleSheet.create({
     height: 92,
     borderRadius: 24,
     // backgroundColor: '#FFFFFF',
+=======
+  // Header
+  header: { alignItems: 'center', marginBottom: 26 },
+  iconTile: {
+    width: 84,
+    height: 84,
+    borderRadius: 22,
+    backgroundColor: '#FFFFFF',
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -358,6 +497,7 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 8,
   },
+<<<<<<< HEAD
   iconImage: { width: 92, height: 92 },
   brandTitle: {
     color: '#FFFFFF',
@@ -398,6 +538,47 @@ const styles = StyleSheet.create({
   // Fields
   fieldWrap: { marginBottom: 20 },
   label: { color: '#2B3445', fontSize: 16, fontWeight: '700', marginBottom: 6 },
+=======
+  wordmark: { marginTop: 16 },
+  brandTitle: {
+    color: '#FFFFFF',
+    fontSize: 28,
+    fontWeight: '800',
+    marginTop: 2,
+    letterSpacing: 0.3,
+    includeFontPadding: false,
+    textAlign: 'center',
+  },
+
+  // Card
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28,
+    padding: 24,
+    shadowColor: '#063D2F',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.22,
+    shadowRadius: 28,
+    elevation: 14,
+  },
+  welcome: {
+    color: '#0E1726',
+    fontSize: 26,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: '#7A8496',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 6,
+    marginBottom: 24,
+  },
+
+  // Fields
+  fieldWrap: { marginBottom: 18 },
+  label: { color: '#2B3445', fontSize: 14, fontWeight: '700', marginBottom: 8 },
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   field: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -414,6 +595,7 @@ const styles = StyleSheet.create({
   input: { flex: 1, fontSize: 16, color: '#1B2233', paddingVertical: 0 },
   errorText: { color: '#DC2626', fontSize: 12, marginTop: 6, marginLeft: 4 },
 
+<<<<<<< HEAD
   // Remember me
   rememberRow: {
     flexDirection: 'row',
@@ -437,6 +619,8 @@ const styles = StyleSheet.create({
   checkboxChecked: { backgroundColor: '#13A07C', borderColor: '#13A07C' },
   rememberText: { color: '#2B3445', fontSize: 14, fontWeight: '600' },
 
+=======
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   // Button
   buttonWrap: { marginTop: 8, borderRadius: 30, overflow: 'hidden' },
   button: {
@@ -444,8 +628,15 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     backgroundColor: '#14a973',
   },
   buttonDisabled: { opacity: 0.85 },
   buttonText: { color: '#FFFFFF', fontSize: 18, fontWeight: '700', letterSpacing: 0.5 },
+=======
+  },
+  buttonDisabled: { opacity: 0.85 },
+  buttonRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', letterSpacing: 1 },
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 })

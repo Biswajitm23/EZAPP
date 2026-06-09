@@ -39,9 +39,13 @@ axiosInstance.interceptors.request.use(
         }
       }
     } catch (err) {
+<<<<<<< HEAD
       if (__DEV__) {
         console.log('[axios] Failed to read auth token:', err)
       }
+=======
+      console.log('[axios] Failed to read auth token:', err)
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     }
     return req
   },
@@ -68,9 +72,13 @@ axiosInstance.interceptors.response.use(
       // the expiry immediately (mirrors the OLD APP interceptor).
       const resData = error?.response?.data
       if (resData?.status === 'ERROR' && resData?.message === 'Account is no longer active.') {
+<<<<<<< HEAD
         if (__DEV__) {
           console.log('[axios] Account no longer active — forcing logout')
         }
+=======
+        console.log('[axios] Account no longer active — forcing logout')
+>>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
         await SecureStore.deleteItemAsync(AUTH_STORAGE_KEY).catch(() => {})
         store.dispatch(setSessionExpired(true))
         return Promise.reject(error)
