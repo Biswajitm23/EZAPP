@@ -1,0 +1,26 @@
+{
+  "io": {
+    "inputJsonPath": "tasks/01KTTH883J85ZMWHGKSEY7YHWH/input.json",
+    "outputJsonPath": "tasks/01KTTH883J85ZMWHGKSEY7YHWH/output.json"
+  },
+  "kind": "shell",
+  "labels": [
+    "gate",
+    "iteration-1",
+    "shell",
+    "typecheck"
+  ],
+  "shell": {
+    "command": "npx tsc --noEmit"
+  },
+  "title": "TypeScript gate (iteration 1)",
+  "schemaVersion": "2026.01.tasks-v1",
+  "effectId": "01KTTH883J85ZMWHGKSEY7YHWH",
+  "taskId": "typecheck-gate",
+  "invocationKey": "dashboard-hero-redesign:S000003:typecheck-gate",
+  "stepId": "S000003",
+  "inputs": {
+    "iteration": 1,
+    "projectRoot": "."
+  }
+}

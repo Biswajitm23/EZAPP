@@ -1,0 +1,22 @@
+{
+  "type": "EFFECT_REQUESTED",
+  "recordedAt": "2026-06-11T05:07:35.715Z",
+  "data": {
+    "harness": "claude-code",
+    "effectId": "01KTTH883J85ZMWHGKSEY7YHWH",
+    "invocationKey": "dashboard-hero-redesign:S000003:typecheck-gate",
+    "invocationHash": "e2be255ba61526498cb0f86a7b45fab1ac1e5d3bf373049d085217b81790d8b1",
+    "stepId": "S000003",
+    "taskId": "typecheck-gate",
+    "kind": "shell",
+    "label": "shell",
+    "taskDefRef": "tasks/01KTTH883J85ZMWHGKSEY7YHWH/task.json",
+    "labels": [
+      "shell",
+      "gate",
+      "typecheck",
+      "iteration-1"
+    ]
+  },
+  "checksum": "569a6a33147845853ddbc5084662eeec20a7abdcab189a003e32fee7d4f70d1a"
+}

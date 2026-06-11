@@ -13,7 +13,51 @@ export const AUTH_STORAGE_KEY = 'auth'
 export interface StoredAuth {
   accessToken: string
   refreshToken: string
+  /** "Bearer" — from the login / refresh response. */
+  tokenType?: string
+  /** Absolute epoch-ms the access token expires at: Date.now() + expires_in * 1000. */
+  accessExpiresAt?: number
+  /** Absolute epoch-ms the refresh token expires at: Date.now() + refresh_expires_in * 1000. */
+  refreshExpiresAt?: number
   user: UserProfile | null
+}
+
+/**
+ * Refresh the access token this many ms BEFORE it actually expires, to absorb
+ * clock skew + request latency (so a token never expires mid-flight).
+ */
+export const TOKEN_EXPIRY_SKEW_MS = 30_000
+
+/** Auth lifecycle logger — emits the exact event tags (ACCESS EXPIRED, REFRESH
+ *  START/SUCCESS/ROTATED, LOGOUT TRIGGERED) used across the refresh flow. */
+export const authLog = (event: string): void => {
+  if (__DEV__) console.log(`[auth] ${event}`)
+}
+
+/** Convert a relative `expires_in` (seconds) into an absolute epoch-ms expiry. */
+export const expiryFromNow = (seconds?: number | null): number | undefined =>
+  typeof seconds === 'number' && seconds > 0 ? Date.now() + seconds * 1000 : undefined
+
+/**
+ * True when the access token is missing or within the skew window of expiry. When
+ * the expiry is unknown (e.g. a session stored before expiry-tracking existed) we
+ * return false so the request still goes out — the 401 response interceptor stays
+ * the safety net.
+ */
+export const isAccessTokenExpired = (auth?: StoredAuth | null): boolean => {
+  if (!auth?.accessToken) return true
+  if (typeof auth.accessExpiresAt !== 'number') return false
+  return Date.now() >= auth.accessExpiresAt - TOKEN_EXPIRY_SKEW_MS
+}
+
+/**
+ * True only when we KNOW the refresh token has expired (so a /refresh call would
+ * be futile and we should log out immediately). Unknown expiry → false (attempt
+ * the refresh; a 401 will then trigger logout).
+ */
+export const isRefreshTokenExpired = (auth?: StoredAuth | null): boolean => {
+  if (typeof auth?.refreshExpiresAt !== 'number') return false
+  return Date.now() >= auth.refreshExpiresAt
 }
 
 export const saveAuth = async (auth: StoredAuth): Promise<void> => {
@@ -41,7 +85,6 @@ export const clearStoredAuth = async (): Promise<void> => {
     console.error('[auth] Failed to clear session:', err)
   }
 }
-<<<<<<< HEAD
 
 /**
  * "Remember me" credentials.
@@ -85,5 +128,3 @@ export const clearRememberedCredentials = async (): Promise<void> => {
     console.error('[auth] Failed to clear remembered credentials:', err)
   }
 }
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43

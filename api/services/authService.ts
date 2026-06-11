@@ -23,9 +23,13 @@ export const authService = {
     return {
       // access_token: Bearer, 60 min. (token is a backward-compat alias.)
       accessToken: res.access_token ?? res.token ?? '',
-      // refresh_token: 60 days. Stored by signIn; the axiosInstance 401
-      // interceptor uses it to auto-refresh + rotate. See ENDPOINTS.auth.refresh.
+      // refresh_token: 60 days. Stored by signIn; the axiosInstance interceptor
+      // uses it to auto-refresh + rotate. See ENDPOINTS.auth.refresh.
       refreshToken: res.refresh_token ?? '',
+      tokenType: res.token_type ?? 'Bearer',
+      // Lifetimes (seconds) — signIn turns these into absolute expiry timestamps.
+      expiresIn: res.expires_in,
+      refreshExpiresIn: res.refresh_expires_in,
       user: {
         id: u.id,
         emp_id: u.emp_id,
@@ -50,6 +54,9 @@ export const authService = {
       user: data.user,
       accessToken: data.access_token ?? data.accessToken,
       refreshToken: data.refresh_token ?? data.refreshToken,
+      tokenType: data.token_type ?? 'Bearer',
+      expiresIn: data.expires_in,
+      refreshExpiresIn: data.refresh_expires_in,
     }
   },
 
@@ -66,8 +73,15 @@ export const authService = {
    */
   refresh: async (refreshToken: string): Promise<RefreshResponse> => {
     const res = await requestRefresh(refreshToken)
-    // Rotate: the old refresh token is now invalid — persist the new pair.
-    await saveRotatedTokens(res.access_token, res.refresh_token)
+    // Rotate: the old refresh token is now invalid — persist the new pair AND the
+    // refreshed expiry timestamps.
+    await saveRotatedTokens(
+      res.access_token,
+      res.refresh_token,
+      res.expires_in,
+      res.refresh_expires_in,
+      res.token_type
+    )
     return res
   },
 

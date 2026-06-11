@@ -1,0 +1,28 @@
+{
+  "io": {
+    "inputJsonPath": "tasks/01KTTH886JRHZ4ZG53JZ08S03R/input.json",
+    "outputJsonPath": "tasks/01KTTH886JRHZ4ZG53JZ08S03R/output.json"
+  },
+  "kind": "shell",
+  "labels": [
+    "gate",
+    "iteration-1",
+    "lint",
+    "shell"
+  ],
+  "shell": {
+    "command": "npx expo lint"
+  },
+  "title": "ESLint gate (iteration 1)",
+  "schemaVersion": "2026.01.tasks-v1",
+  "effectId": "01KTTH886JRHZ4ZG53JZ08S03R",
+  "taskId": "lint-gate",
+  "invocationKey": "dashboard-hero-redesign:S000004:lint-gate",
+  "stepId": "S000004",
+  "inputs": {
+    "componentsDir": "components/dashboard",
+    "dashboardFile": "app/(protected)/(tabs)/dashboard/index.tsx",
+    "iteration": 1,
+    "projectRoot": "."
+  }
+}

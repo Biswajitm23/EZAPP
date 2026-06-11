@@ -1,0 +1,14 @@
+env: load .env
+env: export EXPO_PUBLIC_BASE_URL
+
+D:\EZAPP\app\(protected)\(tabs)\dashboard\index.tsx
+  56:28  warning  'spacing' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\EZAPP\components\BottomTabBar.tsx
+  76:6  warning  React Hook useEffect has a missing dependency: 'target'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\EZAPP\components\InitialAvatar.tsx
+  8:17  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+✖ 3 problems (0 errors, 3 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.

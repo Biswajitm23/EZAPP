@@ -1,0 +1,16 @@
+{
+  "projectRoot": ".",
+  "dashboardFile": "app/(protected)/(tabs)/dashboard/index.tsx",
+  "barrelFile": "components/index.ts",
+  "componentsDir": "components/dashboard",
+  "themeTokensFile": "constants/theme/colors.ts",
+  "components": [
+    "HeroCarousel",
+    "HeroCard",
+    "PaginationDots",
+    "DashboardHeader",
+    "CategoryTabs"
+  ],
+  "targetQuality": 90,
+  "maxIterations": 3
+}

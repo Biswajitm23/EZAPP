@@ -23,6 +23,8 @@ interface AppHeaderProps {
   showProfile?: boolean
   /** Override the avatar tap target (defaults to the Profile tab). */
   onProfilePress?: () => void
+  /** Horizontal alignment of the kicker + title. Defaults to 'center'. */
+  align?: 'center' | 'left'
 }
 
 /**
@@ -39,10 +41,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onBack,
   showProfile = true,
   onProfilePress,
+  align = 'center',
 }) => {
   const router = useRouter()
   const { user } = useAuth()
   const avatar = user?.profile_image_url
+  const isLeft = align === 'left'
 
   const handleBack =
     onBack ??
@@ -55,24 +59,28 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
   return (
     <View style={styles.wrap}>
-      {/* Left slot — back button */}
-      <View style={styles.side}>
-        {showBack ? (
-          <PressableScale style={styles.iconBtn} onPress={handleBack} activeScale={0.9} hitSlop={6}>
-            <Ionicons name="chevron-back" size={22} color="#1B2233" />
-          </PressableScale>
-        ) : null}
-      </View>
+      {/* Left slot — back button. Omitted entirely for left-aligned headers
+          with no back button so the title can start at the very left edge. */}
+      {(!isLeft || showBack) && (
+        <View style={styles.side}>
+          {showBack ? (
+            <PressableScale style={styles.backBtn} onPress={handleBack} activeScale={0.9} hitSlop={6}>
+              <Ionicons name="chevron-back" size={20} color="#1B2233" />
+              <Text style={styles.backText}>Back</Text>
+            </PressableScale>
+          ) : null}
+        </View>
+      )}
 
       {/* Center slot — kicker + title */}
-      <View style={styles.center}>
+      <View style={[styles.center, isLeft && styles.centerLeft]}>
         {kicker ? (
-          <Text style={styles.kicker} numberOfLines={1}>
+          <Text style={[styles.kicker, isLeft && styles.alignLeft]} numberOfLines={1}>
             {kicker}
           </Text>
         ) : null}
         {title ? (
-          <Text style={styles.title} numberOfLines={1}>
+          <Text style={[styles.title, isLeft && styles.alignLeft]} numberOfLines={1}>
             {title}
           </Text>
         ) : null}
@@ -101,18 +109,26 @@ const styles = StyleSheet.create({
     minHeight: 52,
     marginBottom: 16,
   },
-  side: { width: 48, justifyContent: 'center' },
+  // Equal-width side slots keep the title optically centered; wide enough to
+  // fit the "‹ Back" pill on the left and the avatar on the right.
+  side: { width: 84, justifyContent: 'center' },
   sideRight: { alignItems: 'flex-end' },
   center: { flex: 1, alignItems: 'center', paddingHorizontal: 4 },
+  centerLeft: { alignItems: 'flex-start', paddingHorizontal: 0 },
+  alignLeft: { textAlign: 'left' },
   kicker: { fontSize: 13, color: '#9AA1AD', fontWeight: '500', textAlign: 'center' },
   title: { fontSize: 20, fontWeight: '800', color: '#0E1726', textAlign: 'center', marginTop: 2 },
-  iconBtn: {
-    width: 40,
+  backBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
     height: 40,
+    paddingLeft: 8,
+    paddingRight: 14,
     borderRadius: 20,
     backgroundColor: '#F3F5F9',
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: 2,
   },
+  backText: { fontSize: 15, fontWeight: '600', color: '#1B2233' },
   avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#E5E7EB' },
 })

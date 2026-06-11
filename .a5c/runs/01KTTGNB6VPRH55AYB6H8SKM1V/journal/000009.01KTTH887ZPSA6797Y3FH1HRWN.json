@@ -1,0 +1,22 @@
+{
+  "type": "EFFECT_REQUESTED",
+  "recordedAt": "2026-06-11T05:07:35.807Z",
+  "data": {
+    "harness": "claude-code",
+    "effectId": "01KTTH886JRHZ4ZG53JZ08S03R",
+    "invocationKey": "dashboard-hero-redesign:S000004:lint-gate",
+    "invocationHash": "a6fd9a56efa41878c9687ea09703a5934332a1807dd0423805bf36f6f0baa32f",
+    "stepId": "S000004",
+    "taskId": "lint-gate",
+    "kind": "shell",
+    "label": "shell",
+    "taskDefRef": "tasks/01KTTH886JRHZ4ZG53JZ08S03R/task.json",
+    "labels": [
+      "shell",
+      "gate",
+      "lint",
+      "iteration-1"
+    ]
+  },
+  "checksum": "433b0fce6565500740c1ef033adba88879a870e5d836ef7542d51010d9b0811a"
+}

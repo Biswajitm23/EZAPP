@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@a5c-ai/babysitter-sdk": "^0.0.187",
+    "playwright-core": "^1.60.0"
+  }
+}

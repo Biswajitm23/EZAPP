@@ -68,6 +68,12 @@ export interface LoginResult {
   user: UserProfile
   accessToken: string
   refreshToken: string
+  /** "Bearer" — token scheme from the login response. */
+  tokenType?: string
+  /** Access token lifetime in seconds (login `expires_in`). */
+  expiresIn?: number
+  /** Refresh token lifetime in seconds (login `refresh_expires_in`). */
+  refreshExpiresIn?: number
 }
 
 /**
@@ -216,7 +222,6 @@ export interface BitpointsResponse {
   count: number
   bitpoints: BitpointRow[]
 }
-<<<<<<< HEAD
 
 /* -------------------------------------------------------------------------- */
 /* Collaboration ("Collab Days") API ( GET /collaboration )                   */
@@ -498,5 +503,3 @@ export interface GetDetailParams {
   slug?: string
   id?: string | number
 }
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43

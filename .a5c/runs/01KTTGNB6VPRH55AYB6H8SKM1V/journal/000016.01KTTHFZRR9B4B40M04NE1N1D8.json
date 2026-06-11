@@ -1,0 +1,20 @@
+{
+  "type": "EFFECT_REQUESTED",
+  "recordedAt": "2026-06-11T05:11:49.272Z",
+  "data": {
+    "harness": "claude-code",
+    "effectId": "01KTTHFZQGKRN65KQHDS8QS5X0",
+    "invocationKey": "dashboard-hero-redesign:S000006:finalize-redesign",
+    "invocationHash": "7900ca89e5f899e48dce7c9a84eb0af0f5848e1ca71996dd4d046b0eb66c9091",
+    "stepId": "S000006",
+    "taskId": "finalize-redesign",
+    "kind": "agent",
+    "label": "agent",
+    "taskDefRef": "tasks/01KTTHFZQGKRN65KQHDS8QS5X0/task.json",
+    "labels": [
+      "agent",
+      "finalize"
+    ]
+  },
+  "checksum": "3b5a26bab9974b63083e5a249943d4fd341b58dad923585222efe7df17fa344c"
+}

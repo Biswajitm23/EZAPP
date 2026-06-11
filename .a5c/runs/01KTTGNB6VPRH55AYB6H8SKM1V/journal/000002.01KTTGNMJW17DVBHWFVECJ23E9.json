@@ -1,0 +1,20 @@
+{
+  "type": "EFFECT_REQUESTED",
+  "recordedAt": "2026-06-11T04:57:25.852Z",
+  "data": {
+    "harness": "claude-code",
+    "effectId": "01KTTGNMGSDR7DPKZKMH0JGAPE",
+    "invocationKey": "dashboard-hero-redesign:S000001:analyze-dashboard",
+    "invocationHash": "394648b2acf268fd8c4a25f36bdc8f77b20f7cf577e0c801ba0334f84fd3e9cb",
+    "stepId": "S000001",
+    "taskId": "analyze-dashboard",
+    "kind": "agent",
+    "label": "agent",
+    "taskDefRef": "tasks/01KTTGNMGSDR7DPKZKMH0JGAPE/task.json",
+    "labels": [
+      "agent",
+      "analysis"
+    ]
+  },
+  "checksum": "8a255e7f063ad98eef7a0068fa548ec353b1edcd231a44d69af8f51659de49eb"
+}

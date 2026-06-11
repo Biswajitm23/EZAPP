@@ -9,7 +9,6 @@
       "distribution": "internal"
     },
     "preview": {
-<<<<<<< HEAD
       "distribution": "internal",
       "android": {
         "buildType": "apk"
@@ -17,9 +16,6 @@
       "env": {
         "EAS_BUILD_ARM64_ONLY": "1"
       }
-=======
-      "distribution": "internal"
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     },
     "production": {
       "autoIncrement": true

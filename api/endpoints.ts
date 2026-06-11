@@ -3,11 +3,6 @@
  *
  * Paths are relative to `config.baseUrl` (which already ends in a slash).
  * Keeping them here means you change a route in exactly one place.
-<<<<<<< HEAD
-=======
- *
- * TODO: replace these placeholder paths with the real Employee Zone API routes.
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
  */
 export const ENDPOINTS = {
   auth: {
@@ -33,7 +28,6 @@ export const ENDPOINTS = {
   bitpoints: {
     list: 'bitpoints',
   },
-<<<<<<< HEAD
   // Monthly collaboration ("Collab Days") matrix. Bearer auth, any logged-in
   // role. Params: { month, year } — both optional (defaults to the latest
   // uploaded month). Returns { status, available, month, title,
@@ -53,6 +47,4 @@ export const ENDPOINTS = {
     handbookRead: 'hr-handbook/read', // POST { handbook_id }
     guidelineConfirm: 'guidelines/confirm', // POST { guideline_id, signature_image? }
   },
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
 } as const

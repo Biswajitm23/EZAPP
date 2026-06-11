@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '@/provider/hooks'
 import { setAuthDetails, clearAuth } from '@/provider/slices/authSlice'
-import { saveAuth, clearStoredAuth } from '@/helpers/auth'
+import { saveAuth, clearStoredAuth, expiryFromNow, authLog } from '@/helpers/auth'
 import { authService } from '@/api'
 import type { LoginResult } from '@/api/types'
 
@@ -17,9 +17,14 @@ export const useAuth = () => {
 
   const signIn = useCallback(
     async (result: LoginResult) => {
+      // Turn the relative lifetimes into absolute expiry timestamps and persist
+      // the full session (tokens + type + expiries) to secure storage.
       await saveAuth({
         accessToken: result.accessToken,
         refreshToken: result.refreshToken,
+        tokenType: result.tokenType ?? 'Bearer',
+        accessExpiresAt: expiryFromNow(result.expiresIn),
+        refreshExpiresAt: expiryFromNow(result.refreshExpiresIn),
         user: result.user,
       })
       dispatch(
@@ -35,6 +40,7 @@ export const useAuth = () => {
   )
 
   const signOut = useCallback(async () => {
+    authLog('LOGOUT TRIGGERED')
     try {
       await authService.logout()
     } catch {

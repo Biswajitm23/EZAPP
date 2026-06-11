@@ -1,7 +1,13 @@
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store'
 import config from '@/config'
-import { AUTH_STORAGE_KEY } from '@/helpers/auth'
+import {
+  AUTH_STORAGE_KEY,
+  authLog,
+  isAccessTokenExpired,
+  isRefreshTokenExpired,
+  type StoredAuth,
+} from '@/helpers/auth'
 import { store } from '@/provider/store/store'
 import { setSessionExpired } from '@/provider/slices/authSlice'
 import { refreshAccessToken } from './refreshToken'
@@ -27,25 +33,40 @@ export const axiosInstance = axios.create({
   },
 })
 
-// Attach the access token to every request
+// Request interceptor — proactively keep the access token fresh, then attach it.
+//   1. no session            → send unauthenticated (login, refresh-bare, etc.)
+//   2. refresh token expired  → logout (a refresh would be futile)
+//   3. access token expired   → refresh first (single-flight), attach new token
+//   4. access token valid     → attach it
 axiosInstance.interceptors.request.use(
   async (req) => {
     try {
       const raw = await SecureStore.getItemAsync(AUTH_STORAGE_KEY)
-      if (raw) {
-        const auth = JSON.parse(raw)
-        if (auth?.accessToken) {
-          req.headers.Authorization = `Bearer ${auth.accessToken}`
+      const auth = raw ? (JSON.parse(raw) as StoredAuth) : null
+      if (!auth?.accessToken) return req
+
+      const scheme = auth.tokenType || 'Bearer'
+
+      if (isRefreshTokenExpired(auth)) {
+        authLog('LOGOUT TRIGGERED')
+        store.dispatch(setSessionExpired(true))
+        return req
+      }
+
+      if (isAccessTokenExpired(auth)) {
+        authLog('ACCESS EXPIRED')
+        const newToken = await refreshAccessToken()
+        if (newToken) {
+          req.headers.Authorization = `${scheme} ${newToken}`
         }
+        return req
       }
+
+      req.headers.Authorization = `${scheme} ${auth.accessToken}`
     } catch (err) {
-<<<<<<< HEAD
       if (__DEV__) {
-        console.log('[axios] Failed to read auth token:', err)
+        console.log('[axios] Failed to read/refresh auth token:', err)
       }
-=======
-      console.log('[axios] Failed to read auth token:', err)
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     }
     return req
   },
@@ -72,13 +93,9 @@ axiosInstance.interceptors.response.use(
       // the expiry immediately (mirrors the OLD APP interceptor).
       const resData = error?.response?.data
       if (resData?.status === 'ERROR' && resData?.message === 'Account is no longer active.') {
-<<<<<<< HEAD
         if (__DEV__) {
           console.log('[axios] Account no longer active — forcing logout')
         }
-=======
-        console.log('[axios] Account no longer active — forcing logout')
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
         await SecureStore.deleteItemAsync(AUTH_STORAGE_KEY).catch(() => {})
         store.dispatch(setSessionExpired(true))
         return Promise.reject(error)

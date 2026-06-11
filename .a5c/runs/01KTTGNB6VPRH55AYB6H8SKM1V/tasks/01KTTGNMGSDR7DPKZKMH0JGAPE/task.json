@@ -1,0 +1,147 @@
+{
+  "agent": {
+    "name": "general-purpose",
+    "outputSchema": {
+      "properties": {
+        "componentPlan": {
+          "items": {
+            "properties": {
+              "animations": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "props": {
+                "type": "string"
+              },
+              "responsibility": {
+                "type": "string"
+              },
+              "tokensUsed": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "preserveContract": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tokenMap": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "componentPlan",
+        "tokenMap",
+        "preserveContract"
+      ],
+      "type": "object"
+    },
+    "prompt": {
+      "context": {
+        "barrelFile": "components/index.ts",
+        "components": [
+          "HeroCarousel",
+          "HeroCard",
+          "PaginationDots",
+          "DashboardHeader",
+          "CategoryTabs"
+        ],
+        "componentsDir": "components/dashboard",
+        "dashboardFile": "app/(protected)/(tabs)/dashboard/index.tsx",
+        "projectRoot": ".",
+        "themeTokensFile": "constants/theme/colors.ts"
+      },
+      "instructions": [
+        "Read these files first (paths relative to projectRoot=.):",
+        "  - dashboard screen: app/(protected)/(tabs)/dashboard/index.tsx",
+        "  - theme tokens: constants/theme/colors.ts and constants/theme/index.ts",
+        "  - components barrel: components/index.ts",
+        "  - components/motion/PressableScale.tsx, components/motion/Reveal.tsx, components/AppHeader.tsx",
+        "  - api/types.ts (DashboardItem, DashboardSection, DashboardTab) — READ ONLY, do not plan changes here",
+        "  - package.json (confirm react-native-reanimated, expo-image, expo-linear-gradient are available)",
+        "",
+        "Plan exactly these new components under components/dashboard/: HeroCarousel, HeroCard, PaginationDots, DashboardHeader, CategoryTabs.",
+        "For each component define: file path, props (TypeScript shapes reusing api/types.ts), responsibility,",
+        "which theme tokens it reads, and the reanimated animations it owns.",
+        "HeroCarousel: horizontal snap FlatList/ScrollView, card width = 84% screen, neighbours peeking,",
+        "  per-card interpolation (active scale 1 / inactive 0.92, slight translateX, opacity), drives PaginationDots.",
+        "HeroCard: edge-to-edge expo-image, bottom linear-gradient scrim, radius 24-28, soft elevation, glass overlay;",
+        "  left = title + subtitle/progress (submitted_forms/total_forms), right = status pill",
+        "  (done -> surface bg + text.primary; pending -> BRAND bg + background.primary text). Reuse cardState() logic.",
+        "PaginationDots: theme-colored, active dot wider + BRAND (width animated), inactive = border color.",
+        "DashboardHeader: wrap existing <AppHeader/>, keep greeting + avatar, improve spacing/typography.",
+        "CategoryTabs: API-driven tabs; active = BRAND bg + background text; inactive = background.secondary bg + text.secondary.",
+        "CRITICAL THEME RULE: use ONLY the existing design system. NEVER hardcode any color literal",
+        "(no hex like #FFFFFF/#13A07C, no \"white\"/\"black\"/\"gray\", no rgba() for color) in the NEW",
+        "component files or the refactored dashboard. The ONE allowed brand constant is BRAND from",
+        "@/constants/theme (or colors.brand.primary).",
+        "Map colors dynamically via useTheme(): background.primary (screen bg), background.secondary or",
+        "background.card (card/surface bg), text.primary (titles), text.secondary (subtitles), border.* ",
+        "(borders/inactive dots), brand.primary / BRAND (active accents). isDark from useTheme() for any",
+        "light/dark conditional. Use pastelAt(i) for per-card image-fallback tints. Translucent gradient",
+        "overlays via expo-linear-gradient using rgba(0,0,0,a) are acceptable ONLY as an image scrim",
+        "(reading legibility), not as a theme color substitute.",
+        "PRESERVE EXACTLY (do not modify behavior): dashboardService + useQuery([\"dashboard\",\"content\"]),",
+        "router navigation (openCard logic: external -> WebBrowser, detail -> router.push content/[id],",
+        "fallback internal link), useAuth, RefreshControl/onRefresh, HIDDEN_SECTIONS filtering, tab",
+        "filtering (activeTab), section ordering by meta.tabs, the Social section special-casing, the",
+        "presentations special card, cardState() label/done logic, greetingForNow(), loading skeleton and",
+        "error/empty states. API models in api/types.ts MUST stay unchanged.",
+        "Define a tokenMap: for every visual element, the exact theme token to use.",
+        "Write the spec to artifacts/refactor-spec.md as well, then return the JSON.",
+        "Do NOT modify any source files in this task — analysis & planning only."
+      ],
+      "outputFormat": "JSON",
+      "role": "Senior React Native + Expo UI architect",
+      "task": "Read the current dashboard screen, the theme token system, and the components barrel, then produce a concrete, file-level refactor spec to redesign the dashboard into a premium hero-slider experience split into reusable components."
+    }
+  },
+  "io": {
+    "inputJsonPath": "tasks/01KTTGNMGSDR7DPKZKMH0JGAPE/input.json",
+    "outputJsonPath": "tasks/01KTTGNMGSDR7DPKZKMH0JGAPE/output.json"
+  },
+  "kind": "agent",
+  "labels": [
+    "agent",
+    "analysis"
+  ],
+  "title": "Analyze dashboard + theme and produce refactor spec",
+  "schemaVersion": "2026.01.tasks-v1",
+  "effectId": "01KTTGNMGSDR7DPKZKMH0JGAPE",
+  "taskId": "analyze-dashboard",
+  "invocationKey": "dashboard-hero-redesign:S000001:analyze-dashboard",
+  "stepId": "S000001",
+  "inputs": {
+    "barrelFile": "components/index.ts",
+    "components": [
+      "HeroCarousel",
+      "HeroCard",
+      "PaginationDots",
+      "DashboardHeader",
+      "CategoryTabs"
+    ],
+    "componentsDir": "components/dashboard",
+    "dashboardFile": "app/(protected)/(tabs)/dashboard/index.tsx",
+    "projectRoot": ".",
+    "themeTokensFile": "constants/theme/colors.ts"
+  }
+}

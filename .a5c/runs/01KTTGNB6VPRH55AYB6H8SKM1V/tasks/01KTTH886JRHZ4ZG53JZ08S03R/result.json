@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "2026.01.results-v1",
+  "effectId": "01KTTH886JRHZ4ZG53JZ08S03R",
+  "taskId": "lint-gate",
+  "invocationKey": "dashboard-hero-redesign:S000004:lint-gate",
+  "status": "ok",
+  "result": {
+    "errorCount": 0,
+    "exitCode": 0,
+    "passed": true,
+    "preexistingWarnings": [
+      "components/BottomTabBar.tsx:76 exhaustive-deps",
+      "components/InitialAvatar.tsx:8 array-type"
+    ],
+    "scopeWarnings": [
+      "app/(protected)/(tabs)/dashboard/index.tsx:56:28 'spacing' is assigned a value but never used"
+    ],
+    "summary": "npx expo lint: 0 errors, 3 warnings. One warning in scope: unused 'spacing' in the refactored dashboard screen — should be removed for cleanliness.",
+    "warningCount": 3
+  },
+  "startedAt": "2026-06-11T05:08:22.104Z",
+  "finishedAt": "2026-06-11T05:08:22.104Z",
+  "value": {
+    "errorCount": 0,
+    "exitCode": 0,
+    "passed": true,
+    "preexistingWarnings": [
+      "components/BottomTabBar.tsx:76 exhaustive-deps",
+      "components/InitialAvatar.tsx:8 array-type"
+    ],
+    "scopeWarnings": [
+      "app/(protected)/(tabs)/dashboard/index.tsx:56:28 'spacing' is assigned a value but never used"
+    ],
+    "summary": "npx expo lint: 0 errors, 3 warnings. One warning in scope: unused 'spacing' in the refactored dashboard screen — should be removed for cleanliness.",
+    "warningCount": 3
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "2026.01.results-v1",
+  "effectId": "01KTTH883J85ZMWHGKSEY7YHWH",
+  "taskId": "typecheck-gate",
+  "invocationKey": "dashboard-hero-redesign:S000003:typecheck-gate",
+  "status": "ok",
+  "result": {
+    "exitCode": 0,
+    "passed": true,
+    "scopeErrorCount": 0,
+    "summary": "npx tsc --noEmit: 0 errors. No type errors in components/dashboard/*, the refactored dashboard screen, or components/index.ts.",
+    "totalErrorCount": 0
+  },
+  "startedAt": "2026-06-11T05:08:21.332Z",
+  "finishedAt": "2026-06-11T05:08:21.332Z",
+  "value": {
+    "exitCode": 0,
+    "passed": true,
+    "scopeErrorCount": 0,
+    "summary": "npx tsc --noEmit: 0 errors. No type errors in components/dashboard/*, the refactored dashboard screen, or components/index.ts.",
+    "totalErrorCount": 0
+  }
+}

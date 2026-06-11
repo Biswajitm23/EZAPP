@@ -1,0 +1,390 @@
+{
+  "agent": {
+    "name": "general-purpose",
+    "outputSchema": {
+      "properties": {
+        "filesCreated": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "filesModified": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "filesCreated",
+        "filesModified",
+        "summary"
+      ],
+      "type": "object"
+    },
+    "prompt": {
+      "context": {
+        "components": [
+          "HeroCarousel",
+          "HeroCard",
+          "PaginationDots",
+          "DashboardHeader",
+          "CategoryTabs"
+        ],
+        "spec": {
+          "componentPlan": [
+            {
+              "animations": [
+                "none of its own; caller wraps it in <Reveal index={0}/> for the staggered entrance"
+              ],
+              "name": "DashboardHeader",
+              "path": "components/dashboard/DashboardHeader.tsx",
+              "props": "interface DashboardHeaderProps { greeting: string; firstName: string }  // greeting = greetingForNow(); firstName = user?.name?.split(' ')[0] ?? 'there'. Renders <AppHeader kicker={greeting} title={firstName} align=\"left\" />",
+              "responsibility": "Thin wrapper around the existing <AppHeader/> that keeps the time-of-day greeting kicker, firstName title and avatar exactly, but owns the surrounding spacing/typography polish so the screen no longer inlines the header. Does not modify AppHeader internals.",
+              "tokensUsed": [
+                "spacing.lg",
+                "spacing.base",
+                "colors.background.primary"
+              ]
+            },
+            {
+              "animations": [
+                "PressableScale spring press feedback per chip (activeScale 0.93)",
+                "optional withTiming on the active chip background color when selection changes"
+              ],
+              "name": "CategoryTabs",
+              "path": "components/dashboard/CategoryTabs.tsx",
+              "props": "import type { DashboardTab } from '@/api/types'; interface CategoryTabsProps { tabs: DashboardTab[]; activeKey: string; onChange: (key: string) => void; style?: StyleProp<ViewStyle> }",
+              "responsibility": "API-driven horizontal category chips from meta.tabs (DashboardTab[]). Controlled component; parent owns activeTab/onChange. Replaces inline renderChips() and is reused for both the in-flow header chips and the floating auto-hiding bar. Each chip is a PressableScale (activeScale 0.93).",
+              "tokensUsed": [
+                "colors.brand.primary",
+                "colors.text.inverse",
+                "colors.background.secondary",
+                "colors.text.secondary",
+                "borderRadius.full",
+                "spacing.sm",
+                "spacing.base",
+                "isDark"
+              ]
+            },
+            {
+              "animations": [
+                "scrollX = useSharedValue(0) via useAnimatedScrollHandler on the horizontal Animated.ScrollView/FlatList (UI thread)",
+                "per-card useAnimatedStyle interpolating scrollX over [(i-1)*snap, i*snap, (i+1)*snap]: scale [0.92,1,0.92], opacity [~0.6,1,~0.6], translateX [+offset,0,-offset] with Extrapolation.CLAMP",
+                "page index synced on onMomentumScrollEnd (JS thread) to drive PaginationDots"
+              ],
+              "name": "HeroCarousel",
+              "path": "components/dashboard/HeroCarousel.tsx",
+              "props": "import type { DashboardSection, DashboardItem } from '@/api/types'; interface HeroCarouselProps { section: DashboardSection; onPressItem: (item: DashboardItem) => void }",
+              "responsibility": "Horizontal snap pager for one section's items (replaces SectionCarousel + CoverflowCard). Card width = 84% screen (Math.round(width*0.84)); neighbours peek via symmetric side padding (width-cardWidth)/2; snap = cardWidth + gap. Drives per-card coverflow interpolation and feeds PaginationDots. Renders HeroCard per item; preserves single-item centering and the presentations special card. Owns the section title.",
+              "tokensUsed": [
+                "colors.text.primary",
+                "colors.background.primary",
+                "spacing.base",
+                "spacing.lg",
+                "isDark"
+              ]
+            },
+            {
+              "animations": [
+                "PressableScale spring press feedback (activeScale ~0.97)",
+                "no coverflow transform here; the scale/opacity/translate is applied by the parent HeroCarousel wrapper to keep HeroCard presentational"
+              ],
+              "name": "HeroCard",
+              "path": "components/dashboard/HeroCard.tsx",
+              "props": "import type { DashboardItem } from '@/api/types'; import type { Pastel } from '@/constants/theme'; interface HeroCardProps { item: DashboardItem; pastel: Pastel; onPress: () => void }",
+              "responsibility": "Premium edge-to-edge hero card: expo-image cover fill with transition, expo-linear-gradient bottom scrim for legibility, radius 24-28, soft elevation, glass bottom overlay. Left = title + subtitle/progress (submitted_forms/total_forms via reused cardState()); right = status pill. Image-less fallback uses pastelAt(index) bg + accent text. cardState() logic reused verbatim.",
+              "tokensUsed": [
+                "borderRadius.xl",
+                "shadows.lg",
+                "pastelAt(i).bg",
+                "pastelAt(i).accent",
+                "colors.text.inverse",
+                "colors.brand.primary",
+                "colors.background.primary",
+                "colors.background.card",
+                "colors.text.primary",
+                "isDark"
+              ]
+            },
+            {
+              "animations": [
+                "each dot width animates via useAnimatedStyle + withTiming/withSpring on active-index change (active ~18px, inactive ~7px)",
+                "optional: interpolate dot width directly from the carousel scrollX SharedValue for a continuous morph"
+              ],
+              "name": "PaginationDots",
+              "path": "components/dashboard/PaginationDots.tsx",
+              "props": "interface PaginationDotsProps { count: number; activeIndex: number; style?: StyleProp<ViewStyle> }  // optional SharedValue<number> overload for fully-UI-thread continuous width morph",
+              "responsibility": "Theme-colored paging indicator. Active dot is wider + BRAND with an animated width; inactive dots use the border color. Centered row beneath the carousel, driven by HeroCarousel's active page (or scrollX).",
+              "tokensUsed": [
+                "colors.brand.primary",
+                "colors.border.default",
+                "spacing.xs"
+              ]
+            }
+          ],
+          "notes": "All five components live under components/dashboard/ with a local index.ts barrel re-exported from components/index.ts (HeroCard and PaginationDots are internal to HeroCarousel; the screen imports DashboardHeader, CategoryTabs, HeroCarousel). Colors are mapped exclusively via useTheme() per the tokenMap; the ONLY allowed color literal is BRAND (prefer colors.brand.primary, or import BRAND_GREEN as BRAND from @/constants/theme). The current screen hardcodes many literals (#13A07C, #FFFFFF, #1B2233, #9FB0C7, #6B7280, #16233A, #F2F4F8, #33425C, #D5DBE3, #0F1A2C, rgba overlays) — all must be replaced. The single permitted exception is the expo-linear-gradient image scrim using rgba(0,0,0,a) purely for legibility. Confirmed available: react-native-reanimated ~4.1.1 (with react-native-worklets 0.5.1), expo-image ~3.0.11, expo-linear-gradient ~15.0.8. Card width changes from current 0.78 to the spec's 0.84 of screen width; inactive coverflow scale relaxes from 0.86 to 0.92 per the brief. ThemeProvider is currently pinned to light (isDark always false) but components must still branch on isDark, never a literal. cardState(), greetingForNow(), HIDDEN_SECTIONS and socialIconFor() move alongside their owning components with identical logic. This is an analysis-only deliverable; no source files were modified.",
+          "preserveContract": [
+            "dashboardService.getContent(signal) + useQuery({ queryKey: ['dashboard','content'], retry: false })",
+            "onRefresh refetch + RefreshControl (refreshing state, BRAND tint)",
+            "useAuth() for user, firstName, avatar",
+            "greetingForNow() time-of-day logic (Good Morning/Afternoon/Evening)",
+            "HIDDEN_SECTIONS = new Set(['rewards','careers']) filtering of tabs and sections",
+            "Active-tab filtering ('all' shows all; otherwise s.key === activeTab)",
+            "Section ordering by meta.tabs (excluding 'all') with Object.values(sections) fallback",
+            "Social section special-casing (section.key === 'social' brand-icon linkable rows)",
+            "Presentations special card (section.key === 'presentations') and single-item centering",
+            "cardState() label/done/subline logic (status, submitted_forms/total_forms, viewed, default View)",
+            "openCard routing: external -> WebBrowser.openBrowserAsync; item.detail -> router.push('/(protected)/content/[id]', {same params}); fallback internal link -> WebBrowser",
+            "Loading skeleton (Skeleton/SkeletonCard), error empty-state + Retry, and no-results state",
+            "Auto-hiding floating tab bar scroll behavior (scrollHandler, chipReveal, settle-to-0/1 on release) stays in the screen, with CategoryTabs rendered inside it",
+            "api/types.ts models (DashboardItem, DashboardSection, DashboardTab, DashboardContentResponse, etc.) remain unchanged"
+          ],
+          "tokenMap": {
+            "brandConstant": "colors.brand.primary (preferred) or BRAND_GREEN/BRAND from @/constants/theme",
+            "categoryTabActiveBg": "colors.brand.primary",
+            "categoryTabActiveText": "colors.text.inverse",
+            "categoryTabInactiveBg": "colors.background.secondary",
+            "categoryTabInactiveText": "colors.text.secondary",
+            "categoryTabRadius": "borderRadius.full",
+            "floatingTabBarBackground": "colors.background.primary",
+            "floatingTabBarShadow": "shadows.md",
+            "headerAvatar": "AppHeader internal (out of scope)",
+            "headerGreetingKicker": "AppHeader internal (out of scope)",
+            "headerTitle": "AppHeader internal (out of scope)",
+            "heroCardElevation": "shadows.lg",
+            "heroCardImageFallbackBg": "pastelAt(i).bg",
+            "heroCardImageFallbackTitle": "pastelAt(i).accent",
+            "heroCardRadius": "borderRadius.xl",
+            "heroImageScrim": "expo-linear-gradient rgba(0,0,0,a) — allowed legibility-scrim exception only",
+            "heroOverlaySubtitleText": "colors.text.inverse (with style opacity, not a color literal)",
+            "heroOverlayTitleText": "colors.text.inverse",
+            "lightDarkConditional": "isDark from useTheme()",
+            "noResultsIcon": "colors.text.tertiary",
+            "noResultsText": "colors.text.secondary",
+            "paginationDotActive": "colors.brand.primary",
+            "paginationDotInactive": "colors.border.default",
+            "refreshControlTint": "colors.brand.primary",
+            "screenBackground": "colors.background.primary",
+            "sectionTitle": "colors.text.primary",
+            "statusPillDoneBg": "colors.background.card",
+            "statusPillDoneText": "colors.text.primary",
+            "statusPillPendingBg": "colors.brand.primary",
+            "statusPillPendingText": "colors.background.primary"
+          }
+        }
+      },
+      "instructions": [
+        "Create new components under components/dashboard/: HeroCarousel.tsx, HeroCard.tsx, PaginationDots.tsx, DashboardHeader.tsx, CategoryTabs.tsx",
+        "Refactor app/(protected)/(tabs)/dashboard/index.tsx to compose them; keep it the default export screen.",
+        "Update the components barrel components/index.ts to export the new components (add a clean section).",
+        "Reuse existing primitives: PressableScale, Reveal (from @/components), AppHeader, expo-image Image,",
+        "react-native-reanimated, and expo-linear-gradient for the card scrim.",
+        "Hero slider: horizontal snap, card width ~84% of useWindowDimensions().width, neighbours peek via side",
+        "padding; per-card reanimated interpolation off a shared scrollX (active scale 1, inactive 0.92, slight",
+        "translateX, opacity fade). PaginationDots below with an animated active dot (wider, BRAND).",
+        "Hero card per spec: edge-to-edge expo-image, expo-linear-gradient bottom scrim, radius 24-28, soft shadow,",
+        "left title + subtitle/progress, right status pill (done vs pending states per spec).",
+        "CRITICAL THEME RULE: use ONLY the existing design system. NEVER hardcode any color literal",
+        "(no hex like #FFFFFF/#13A07C, no \"white\"/\"black\"/\"gray\", no rgba() for color) in the NEW",
+        "component files or the refactored dashboard. The ONE allowed brand constant is BRAND from",
+        "@/constants/theme (or colors.brand.primary).",
+        "Map colors dynamically via useTheme(): background.primary (screen bg), background.secondary or",
+        "background.card (card/surface bg), text.primary (titles), text.secondary (subtitles), border.* ",
+        "(borders/inactive dots), brand.primary / BRAND (active accents). isDark from useTheme() for any",
+        "light/dark conditional. Use pastelAt(i) for per-card image-fallback tints. Translucent gradient",
+        "overlays via expo-linear-gradient using rgba(0,0,0,a) are acceptable ONLY as an image scrim",
+        "(reading legibility), not as a theme color substitute.",
+        "PRESERVE EXACTLY (do not modify behavior): dashboardService + useQuery([\"dashboard\",\"content\"]),",
+        "router navigation (openCard logic: external -> WebBrowser, detail -> router.push content/[id],",
+        "fallback internal link), useAuth, RefreshControl/onRefresh, HIDDEN_SECTIONS filtering, tab",
+        "filtering (activeTab), section ordering by meta.tabs, the Social section special-casing, the",
+        "presentations special card, cardState() label/done logic, greetingForNow(), loading skeleton and",
+        "error/empty states. API models in api/types.ts MUST stay unchanged.",
+        "Keep the Social section + Presentations special card behavior working (may live inside HeroCarousel host or",
+        "remain in the screen — your call — but their tap behavior and rendering must be preserved).",
+        "Ensure TypeScript is strict-clean (no any leaks beyond existing DashboardItem index signature), imports",
+        "resolve via the @/ alias, and dark mode works automatically through useTheme().",
+        "ACTUALLY WRITE the files to disk now. Then return the JSON summary listing real paths."
+      ],
+      "outputFormat": "JSON",
+      "role": "Senior React Native + Expo + TypeScript engineer",
+      "task": "Implement the approved refactor spec: create the new hero-slider components and refactor the dashboard screen to use them. Production-ready, fully typed, theme-token driven."
+    }
+  },
+  "io": {
+    "inputJsonPath": "tasks/01KTTGWYVNPNMNF52V0HWY4D5E/input.json",
+    "outputJsonPath": "tasks/01KTTGWYVNPNMNF52V0HWY4D5E/output.json"
+  },
+  "kind": "agent",
+  "labels": [
+    "agent",
+    "implementation"
+  ],
+  "title": "Implement hero-slider components and refactor dashboard",
+  "schemaVersion": "2026.01.tasks-v1",
+  "effectId": "01KTTGWYVNPNMNF52V0HWY4D5E",
+  "taskId": "implement-redesign",
+  "invocationKey": "dashboard-hero-redesign:S000002:implement-redesign",
+  "stepId": "S000002",
+  "inputs": {
+    "barrelFile": "components/index.ts",
+    "components": [
+      "HeroCarousel",
+      "HeroCard",
+      "PaginationDots",
+      "DashboardHeader",
+      "CategoryTabs"
+    ],
+    "componentsDir": "components/dashboard",
+    "dashboardFile": "app/(protected)/(tabs)/dashboard/index.tsx",
+    "projectRoot": ".",
+    "spec": {
+      "componentPlan": [
+        {
+          "animations": [
+            "none of its own; caller wraps it in <Reveal index={0}/> for the staggered entrance"
+          ],
+          "name": "DashboardHeader",
+          "path": "components/dashboard/DashboardHeader.tsx",
+          "props": "interface DashboardHeaderProps { greeting: string; firstName: string }  // greeting = greetingForNow(); firstName = user?.name?.split(' ')[0] ?? 'there'. Renders <AppHeader kicker={greeting} title={firstName} align=\"left\" />",
+          "responsibility": "Thin wrapper around the existing <AppHeader/> that keeps the time-of-day greeting kicker, firstName title and avatar exactly, but owns the surrounding spacing/typography polish so the screen no longer inlines the header. Does not modify AppHeader internals.",
+          "tokensUsed": [
+            "spacing.lg",
+            "spacing.base",
+            "colors.background.primary"
+          ]
+        },
+        {
+          "animations": [
+            "PressableScale spring press feedback per chip (activeScale 0.93)",
+            "optional withTiming on the active chip background color when selection changes"
+          ],
+          "name": "CategoryTabs",
+          "path": "components/dashboard/CategoryTabs.tsx",
+          "props": "import type { DashboardTab } from '@/api/types'; interface CategoryTabsProps { tabs: DashboardTab[]; activeKey: string; onChange: (key: string) => void; style?: StyleProp<ViewStyle> }",
+          "responsibility": "API-driven horizontal category chips from meta.tabs (DashboardTab[]). Controlled component; parent owns activeTab/onChange. Replaces inline renderChips() and is reused for both the in-flow header chips and the floating auto-hiding bar. Each chip is a PressableScale (activeScale 0.93).",
+          "tokensUsed": [
+            "colors.brand.primary",
+            "colors.text.inverse",
+            "colors.background.secondary",
+            "colors.text.secondary",
+            "borderRadius.full",
+            "spacing.sm",
+            "spacing.base",
+            "isDark"
+          ]
+        },
+        {
+          "animations": [
+            "scrollX = useSharedValue(0) via useAnimatedScrollHandler on the horizontal Animated.ScrollView/FlatList (UI thread)",
+            "per-card useAnimatedStyle interpolating scrollX over [(i-1)*snap, i*snap, (i+1)*snap]: scale [0.92,1,0.92], opacity [~0.6,1,~0.6], translateX [+offset,0,-offset] with Extrapolation.CLAMP",
+            "page index synced on onMomentumScrollEnd (JS thread) to drive PaginationDots"
+          ],
+          "name": "HeroCarousel",
+          "path": "components/dashboard/HeroCarousel.tsx",
+          "props": "import type { DashboardSection, DashboardItem } from '@/api/types'; interface HeroCarouselProps { section: DashboardSection; onPressItem: (item: DashboardItem) => void }",
+          "responsibility": "Horizontal snap pager for one section's items (replaces SectionCarousel + CoverflowCard). Card width = 84% screen (Math.round(width*0.84)); neighbours peek via symmetric side padding (width-cardWidth)/2; snap = cardWidth + gap. Drives per-card coverflow interpolation and feeds PaginationDots. Renders HeroCard per item; preserves single-item centering and the presentations special card. Owns the section title.",
+          "tokensUsed": [
+            "colors.text.primary",
+            "colors.background.primary",
+            "spacing.base",
+            "spacing.lg",
+            "isDark"
+          ]
+        },
+        {
+          "animations": [
+            "PressableScale spring press feedback (activeScale ~0.97)",
+            "no coverflow transform here; the scale/opacity/translate is applied by the parent HeroCarousel wrapper to keep HeroCard presentational"
+          ],
+          "name": "HeroCard",
+          "path": "components/dashboard/HeroCard.tsx",
+          "props": "import type { DashboardItem } from '@/api/types'; import type { Pastel } from '@/constants/theme'; interface HeroCardProps { item: DashboardItem; pastel: Pastel; onPress: () => void }",
+          "responsibility": "Premium edge-to-edge hero card: expo-image cover fill with transition, expo-linear-gradient bottom scrim for legibility, radius 24-28, soft elevation, glass bottom overlay. Left = title + subtitle/progress (submitted_forms/total_forms via reused cardState()); right = status pill. Image-less fallback uses pastelAt(index) bg + accent text. cardState() logic reused verbatim.",
+          "tokensUsed": [
+            "borderRadius.xl",
+            "shadows.lg",
+            "pastelAt(i).bg",
+            "pastelAt(i).accent",
+            "colors.text.inverse",
+            "colors.brand.primary",
+            "colors.background.primary",
+            "colors.background.card",
+            "colors.text.primary",
+            "isDark"
+          ]
+        },
+        {
+          "animations": [
+            "each dot width animates via useAnimatedStyle + withTiming/withSpring on active-index change (active ~18px, inactive ~7px)",
+            "optional: interpolate dot width directly from the carousel scrollX SharedValue for a continuous morph"
+          ],
+          "name": "PaginationDots",
+          "path": "components/dashboard/PaginationDots.tsx",
+          "props": "interface PaginationDotsProps { count: number; activeIndex: number; style?: StyleProp<ViewStyle> }  // optional SharedValue<number> overload for fully-UI-thread continuous width morph",
+          "responsibility": "Theme-colored paging indicator. Active dot is wider + BRAND with an animated width; inactive dots use the border color. Centered row beneath the carousel, driven by HeroCarousel's active page (or scrollX).",
+          "tokensUsed": [
+            "colors.brand.primary",
+            "colors.border.default",
+            "spacing.xs"
+          ]
+        }
+      ],
+      "notes": "All five components live under components/dashboard/ with a local index.ts barrel re-exported from components/index.ts (HeroCard and PaginationDots are internal to HeroCarousel; the screen imports DashboardHeader, CategoryTabs, HeroCarousel). Colors are mapped exclusively via useTheme() per the tokenMap; the ONLY allowed color literal is BRAND (prefer colors.brand.primary, or import BRAND_GREEN as BRAND from @/constants/theme). The current screen hardcodes many literals (#13A07C, #FFFFFF, #1B2233, #9FB0C7, #6B7280, #16233A, #F2F4F8, #33425C, #D5DBE3, #0F1A2C, rgba overlays) — all must be replaced. The single permitted exception is the expo-linear-gradient image scrim using rgba(0,0,0,a) purely for legibility. Confirmed available: react-native-reanimated ~4.1.1 (with react-native-worklets 0.5.1), expo-image ~3.0.11, expo-linear-gradient ~15.0.8. Card width changes from current 0.78 to the spec's 0.84 of screen width; inactive coverflow scale relaxes from 0.86 to 0.92 per the brief. ThemeProvider is currently pinned to light (isDark always false) but components must still branch on isDark, never a literal. cardState(), greetingForNow(), HIDDEN_SECTIONS and socialIconFor() move alongside their owning components with identical logic. This is an analysis-only deliverable; no source files were modified.",
+      "preserveContract": [
+        "dashboardService.getContent(signal) + useQuery({ queryKey: ['dashboard','content'], retry: false })",
+        "onRefresh refetch + RefreshControl (refreshing state, BRAND tint)",
+        "useAuth() for user, firstName, avatar",
+        "greetingForNow() time-of-day logic (Good Morning/Afternoon/Evening)",
+        "HIDDEN_SECTIONS = new Set(['rewards','careers']) filtering of tabs and sections",
+        "Active-tab filtering ('all' shows all; otherwise s.key === activeTab)",
+        "Section ordering by meta.tabs (excluding 'all') with Object.values(sections) fallback",
+        "Social section special-casing (section.key === 'social' brand-icon linkable rows)",
+        "Presentations special card (section.key === 'presentations') and single-item centering",
+        "cardState() label/done/subline logic (status, submitted_forms/total_forms, viewed, default View)",
+        "openCard routing: external -> WebBrowser.openBrowserAsync; item.detail -> router.push('/(protected)/content/[id]', {same params}); fallback internal link -> WebBrowser",
+        "Loading skeleton (Skeleton/SkeletonCard), error empty-state + Retry, and no-results state",
+        "Auto-hiding floating tab bar scroll behavior (scrollHandler, chipReveal, settle-to-0/1 on release) stays in the screen, with CategoryTabs rendered inside it",
+        "api/types.ts models (DashboardItem, DashboardSection, DashboardTab, DashboardContentResponse, etc.) remain unchanged"
+      ],
+      "tokenMap": {
+        "brandConstant": "colors.brand.primary (preferred) or BRAND_GREEN/BRAND from @/constants/theme",
+        "categoryTabActiveBg": "colors.brand.primary",
+        "categoryTabActiveText": "colors.text.inverse",
+        "categoryTabInactiveBg": "colors.background.secondary",
+        "categoryTabInactiveText": "colors.text.secondary",
+        "categoryTabRadius": "borderRadius.full",
+        "floatingTabBarBackground": "colors.background.primary",
+        "floatingTabBarShadow": "shadows.md",
+        "headerAvatar": "AppHeader internal (out of scope)",
+        "headerGreetingKicker": "AppHeader internal (out of scope)",
+        "headerTitle": "AppHeader internal (out of scope)",
+        "heroCardElevation": "shadows.lg",
+        "heroCardImageFallbackBg": "pastelAt(i).bg",
+        "heroCardImageFallbackTitle": "pastelAt(i).accent",
+        "heroCardRadius": "borderRadius.xl",
+        "heroImageScrim": "expo-linear-gradient rgba(0,0,0,a) — allowed legibility-scrim exception only",
+        "heroOverlaySubtitleText": "colors.text.inverse (with style opacity, not a color literal)",
+        "heroOverlayTitleText": "colors.text.inverse",
+        "lightDarkConditional": "isDark from useTheme()",
+        "noResultsIcon": "colors.text.tertiary",
+        "noResultsText": "colors.text.secondary",
+        "paginationDotActive": "colors.brand.primary",
+        "paginationDotInactive": "colors.border.default",
+        "refreshControlTint": "colors.brand.primary",
+        "screenBackground": "colors.background.primary",
+        "sectionTitle": "colors.text.primary",
+        "statusPillDoneBg": "colors.background.card",
+        "statusPillDoneText": "colors.text.primary",
+        "statusPillPendingBg": "colors.brand.primary",
+        "statusPillPendingText": "colors.background.primary"
+      }
+    },
+    "themeTokensFile": "constants/theme/colors.ts"
+  }
+}

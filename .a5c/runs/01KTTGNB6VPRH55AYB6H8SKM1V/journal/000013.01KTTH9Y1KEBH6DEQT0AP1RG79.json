@@ -1,0 +1,21 @@
+{
+  "type": "EFFECT_REQUESTED",
+  "recordedAt": "2026-06-11T05:08:30.899Z",
+  "data": {
+    "harness": "claude-code",
+    "effectId": "01KTTH9XZM8Q33CZEVWC9FSM5B",
+    "invocationKey": "dashboard-hero-redesign:S000005:review-redesign",
+    "invocationHash": "6c15487402d16ff23b35708aa33870e3817f61536bf0707d7edf190ba59ed380",
+    "stepId": "S000005",
+    "taskId": "review-redesign",
+    "kind": "agent",
+    "label": "agent",
+    "taskDefRef": "tasks/01KTTH9XZM8Q33CZEVWC9FSM5B/task.json",
+    "labels": [
+      "agent",
+      "review",
+      "iteration-1"
+    ]
+  },
+  "checksum": "bbc1ded10d4b3c6cf6a1dbae70c02cb54f90d8250991fecae4432d040965d4ec"
+}

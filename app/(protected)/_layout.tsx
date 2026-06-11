@@ -47,13 +47,10 @@ export default function ProtectedLayout() {
         name="content/[id]"
         options={{ animation: 'slide_from_right', animationDuration: 320, gestureEnabled: true }}
       />
-<<<<<<< HEAD
       <Stack.Screen
         name="detail/internal-mobility"
         options={{ animation: 'slide_from_right', animationDuration: 320, gestureEnabled: true }}
       />
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     </Stack>
   )
 }

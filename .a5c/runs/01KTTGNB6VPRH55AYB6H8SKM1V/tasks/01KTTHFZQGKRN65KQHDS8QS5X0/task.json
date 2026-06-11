@@ -1,0 +1,159 @@
+{
+  "agent": {
+    "name": "general-purpose",
+    "outputSchema": {
+      "properties": {
+        "followUps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "summary"
+      ],
+      "type": "object"
+    },
+    "prompt": {
+      "context": {
+        "components": [
+          "HeroCarousel",
+          "HeroCard",
+          "PaginationDots",
+          "DashboardHeader",
+          "CategoryTabs"
+        ],
+        "componentsDir": "components/dashboard",
+        "converged": true,
+        "dashboardFile": "app/(protected)/(tabs)/dashboard/index.tsx",
+        "finalScore": 93,
+        "history": [
+          {
+            "gaps": [
+              "Lint warning in scope (minor): app/(protected)/(tabs)/dashboard/index.tsx:56:28 'spacing' is destructured from useTheme() but never used in the screen body (all spacing in this file is via static StyleSheet literals). Trivial unused-binding cleanup.",
+              "Hero card aspectRatio is fixed at 16/11 with no explicit elevation override beyond shadows.lg; spec asked for 'soft elevation' which is satisfied (shadows.lg = offsetY 8 / blur 16 / opacity 0.15), but the card relies on the parent CoverflowCard for scale and does not itself clip the LinearGradient with a borderRadius prop (it is clipped by the imageWrap overflow:'hidden' + borderRadius.xl, which is correct, but worth noting the gradient uses StyleSheet.absoluteFill and depends on the wrapper clip).",
+              "borderRadius.xl resolves to exactly 24, which is the low end of the required 24-28 range; in spec but not mid-range. No token between 24 (xl) and 9999 (full) exists, so 24 is the only valid in-range choice.",
+              "PresentationCard uses borderRadius.lg (20) for the outer card rather than xl (24) used by HeroCard; this is a deliberate 'distinct treatment' for presentations and is consistent with the preserved special-card intent, but it is a minor radius inconsistency between hero card variants.",
+              "DashboardHeader styles.wrap is an empty StyleSheet object ({}); harmless but dead/no-op style entry."
+            ],
+            "gatesPass": true,
+            "hardcodedColorViolations": [],
+            "iteration": 1,
+            "lintPassed": true,
+            "score": 93,
+            "typecheckPassed": true
+          }
+        ],
+        "iterations": 1,
+        "lastReview": {
+          "breakdown": {
+            "architecture": 100,
+            "headerTabs": 100,
+            "heroCard": 96,
+            "heroSlider": 100,
+            "pagination": 100,
+            "preservation": 95,
+            "themeCompliance": 100
+          },
+          "criticalIssues": [],
+          "gaps": [
+            "Lint warning in scope (minor): app/(protected)/(tabs)/dashboard/index.tsx:56:28 'spacing' is destructured from useTheme() but never used in the screen body (all spacing in this file is via static StyleSheet literals). Trivial unused-binding cleanup.",
+            "Hero card aspectRatio is fixed at 16/11 with no explicit elevation override beyond shadows.lg; spec asked for 'soft elevation' which is satisfied (shadows.lg = offsetY 8 / blur 16 / opacity 0.15), but the card relies on the parent CoverflowCard for scale and does not itself clip the LinearGradient with a borderRadius prop (it is clipped by the imageWrap overflow:'hidden' + borderRadius.xl, which is correct, but worth noting the gradient uses StyleSheet.absoluteFill and depends on the wrapper clip).",
+            "borderRadius.xl resolves to exactly 24, which is the low end of the required 24-28 range; in spec but not mid-range. No token between 24 (xl) and 9999 (full) exists, so 24 is the only valid in-range choice.",
+            "PresentationCard uses borderRadius.lg (20) for the outer card rather than xl (24) used by HeroCard; this is a deliberate 'distinct treatment' for presentations and is consistent with the preserved special-card intent, but it is a minor radius inconsistency between hero card variants.",
+            "DashboardHeader styles.wrap is an empty StyleSheet object ({}); harmless but dead/no-op style entry."
+          ],
+          "hardcodedColorViolations": [],
+          "overallScore": 93,
+          "preservationOk": true,
+          "summary": "Strong, theme-compliant dashboard redesign that passes both quality gates. ARCHITECTURE: the required component split is fully present and correctly layered - HeroCarousel (owns scrollX, snap geometry, pagination, section title, single-item centering, Presentation special-casing), HeroCard (edge-to-edge expo-image + linear-gradient scrim + status pill + cardState helper), PaginationDots (animated width+color dot), DashboardHeader (thin AppHeader wrapper, internals untouched), CategoryTabs (controlled, reused for in-flow + floating bar), plus components/dashboard/index.ts barrel and re-export through components/index.ts. HERO SLIDER: cardWidth = round(width*0.84) (~84%), symmetric sidePad = (width-cardWidth)/2 centers the active card and peeks neighbours, snapToInterval = cardWidth+GAP with decelerationRate fast + disableIntervalMomentum for clean horizontal snap, and a shared scrollX (useAnimatedScrollHandler) drives per-card interpolation: scale [0.92,1,0.92], opacity [0.6,1,0.6], translateX [22,0,-22] over [(i-1)snap, i*snap, (i+1)snap] with CLAMP - exactly the requested coverflow behavior. HERO CARD: radius via borderRadius.xl (24, in 24-28 range), shadows.lg soft elevation, expo-image fills via StyleSheet.absoluteFill with cover fit + 250ms transition, expo-linear-gradient bottom scrim, status pill states correct: done -> colors.background.card bg + colors.text.primary text; pending -> colors.brand.primary bg + colors.background.primary text; subtitle/progress derived from submitted_forms/total_forms via cardState(). PAGINATION: active dot wider (18 vs 7) and brand-colored with reanimated withSpring width + withTiming backgroundColor; inactive uses colors.border.default. HEADER/TABS: AppHeader preserved (only wrapped); active chip = colors.brand.primary bg + colors.text.inverse text, inactive = colors.background.secondary bg + colors.text.secondary text. THEME COMPLIANCE (most important check): exhaustive ripgrep for hex/rgb(a)/named colors across all new + refactored files found ZERO real violations. The only literals present are ALLOWED exceptions: rgba(0,0,0,a) used strictly inside expo-linear-gradient image scrims (HeroCard.tsx:88, HeroCarousel.tsx:178 - two scrims), and the five official social-platform brand hex values (#0A66C2 LinkedIn, #1877F2 Facebook, #E1306C Instagram, #1DA1F2 Twitter, #FF0000 YouTube) inside the preserved SocialSection icon map (dashboard/index.tsx:310-314), which are platform logo identity, explicitly allowed and noted. Brand color is accessed only via colors.brand.primary. AppHeader.tsx contains its own hardcoded colors (#1B2233, #9AA1AD, #0E1726, #F3F5F9, #E5E7EB) but it is a pre-existing preserved component explicitly out of audit scope (spec says AppHeader internals must not change), so not counted. PRESERVATION: all required behaviors intact - dashboardService + useQuery(['dashboard','content'], retry:false), onRefresh/RefreshControl (tinted with brand), useAuth, greetingForNow() three-bucket, HIDDEN_SECTIONS {rewards,careers} filtering on both tabs and sections, activeTab filtering, section ordering by meta.tabs (excluding 'all') with Object.values fallback when ordered pick is empty, Social special-casing, Presentations special card, cardState() logic verbatim, openCard routing (external -> WebBrowser, detail -> router.push content/[id] with id/type/key/slug/detailId/title/image params, fallback link -> WebBrowser), loading skeleton + error EmptyState+Retry + no-results state, and the auto-hiding floating tab bar (scroll-direction-driven reveal that snaps fully shown/hidden). api/types.ts: git diff shows the ONLY change is removal of three leftover git merge-conflict marker lines (<<<<<<< HEAD / ======= / >>>>>>>); no type definition was altered - DashboardItem, DashboardTab, DashboardSection, DashboardMeta, DashboardContentResponse and the submitted_forms/total_forms/link_type fields are all intact. Those markers were invalid syntax, so their removal is what permitted typecheck to pass; the type contract is effectively unchanged, hence preservationOk=true. DEDUCTIONS: -3 for the in-scope lint warning (unused 'spacing'), -2 for the api/types.ts touch (benign conflict-marker cleanup rather than a true no-op), -1 for minor radius variance between hero/presentation card variants, -1 for empty no-op DashboardHeader.wrap style. No hardcoded-color violations and no missing required behavior."
+        },
+        "projectRoot": ".",
+        "targetQuality": 90
+      },
+      "instructions": [
+        "Be concise and factual. Reference the convergence history.",
+        "List the final component files and the key behaviors preserved.",
+        "Return JSON with a markdown \"summary\" string and \"followUps\" array."
+      ],
+      "outputFormat": "JSON",
+      "role": "Tech lead writing a concise change summary",
+      "task": "Produce a short human-readable summary of the dashboard hero-slider redesign: components created, files changed, how the theme-token rule and logic preservation were honored, convergence result, and any residual follow-ups."
+    }
+  },
+  "io": {
+    "inputJsonPath": "tasks/01KTTHFZQGKRN65KQHDS8QS5X0/input.json",
+    "outputJsonPath": "tasks/01KTTHFZQGKRN65KQHDS8QS5X0/output.json"
+  },
+  "kind": "agent",
+  "labels": [
+    "agent",
+    "finalize"
+  ],
+  "title": "Finalize redesign summary",
+  "schemaVersion": "2026.01.tasks-v1",
+  "effectId": "01KTTHFZQGKRN65KQHDS8QS5X0",
+  "taskId": "finalize-redesign",
+  "invocationKey": "dashboard-hero-redesign:S000006:finalize-redesign",
+  "stepId": "S000006",
+  "inputs": {
+    "components": [
+      "HeroCarousel",
+      "HeroCard",
+      "PaginationDots",
+      "DashboardHeader",
+      "CategoryTabs"
+    ],
+    "componentsDir": "components/dashboard",
+    "converged": true,
+    "dashboardFile": "app/(protected)/(tabs)/dashboard/index.tsx",
+    "finalScore": 93,
+    "history": [
+      {
+        "gaps": [
+          "Lint warning in scope (minor): app/(protected)/(tabs)/dashboard/index.tsx:56:28 'spacing' is destructured from useTheme() but never used in the screen body (all spacing in this file is via static StyleSheet literals). Trivial unused-binding cleanup.",
+          "Hero card aspectRatio is fixed at 16/11 with no explicit elevation override beyond shadows.lg; spec asked for 'soft elevation' which is satisfied (shadows.lg = offsetY 8 / blur 16 / opacity 0.15), but the card relies on the parent CoverflowCard for scale and does not itself clip the LinearGradient with a borderRadius prop (it is clipped by the imageWrap overflow:'hidden' + borderRadius.xl, which is correct, but worth noting the gradient uses StyleSheet.absoluteFill and depends on the wrapper clip).",
+          "borderRadius.xl resolves to exactly 24, which is the low end of the required 24-28 range; in spec but not mid-range. No token between 24 (xl) and 9999 (full) exists, so 24 is the only valid in-range choice.",
+          "PresentationCard uses borderRadius.lg (20) for the outer card rather than xl (24) used by HeroCard; this is a deliberate 'distinct treatment' for presentations and is consistent with the preserved special-card intent, but it is a minor radius inconsistency between hero card variants.",
+          "DashboardHeader styles.wrap is an empty StyleSheet object ({}); harmless but dead/no-op style entry."
+        ],
+        "gatesPass": true,
+        "hardcodedColorViolations": [],
+        "iteration": 1,
+        "lintPassed": true,
+        "score": 93,
+        "typecheckPassed": true
+      }
+    ],
+    "iterations": 1,
+    "lastReview": {
+      "breakdown": {
+        "architecture": 100,
+        "headerTabs": 100,
+        "heroCard": 96,
+        "heroSlider": 100,
+        "pagination": 100,
+        "preservation": 95,
+        "themeCompliance": 100
+      },
+      "criticalIssues": [],
+      "gaps": [
+        "Lint warning in scope (minor): app/(protected)/(tabs)/dashboard/index.tsx:56:28 'spacing' is destructured from useTheme() but never used in the screen body (all spacing in this file is via static StyleSheet literals). Trivial unused-binding cleanup.",
+        "Hero card aspectRatio is fixed at 16/11 with no explicit elevation override beyond shadows.lg; spec asked for 'soft elevation' which is satisfied (shadows.lg = offsetY 8 / blur 16 / opacity 0.15), but the card relies on the parent CoverflowCard for scale and does not itself clip the LinearGradient with a borderRadius prop (it is clipped by the imageWrap overflow:'hidden' + borderRadius.xl, which is correct, but worth noting the gradient uses StyleSheet.absoluteFill and depends on the wrapper clip).",
+        "borderRadius.xl resolves to exactly 24, which is the low end of the required 24-28 range; in spec but not mid-range. No token between 24 (xl) and 9999 (full) exists, so 24 is the only valid in-range choice.",
+        "PresentationCard uses borderRadius.lg (20) for the outer card rather than xl (24) used by HeroCard; this is a deliberate 'distinct treatment' for presentations and is consistent with the preserved special-card intent, but it is a minor radius inconsistency between hero card variants.",
+        "DashboardHeader styles.wrap is an empty StyleSheet object ({}); harmless but dead/no-op style entry."
+      ],
+      "hardcodedColorViolations": [],
+      "overallScore": 93,
+      "preservationOk": true,
+      "summary": "Strong, theme-compliant dashboard redesign that passes both quality gates. ARCHITECTURE: the required component split is fully present and correctly layered - HeroCarousel (owns scrollX, snap geometry, pagination, section title, single-item centering, Presentation special-casing), HeroCard (edge-to-edge expo-image + linear-gradient scrim + status pill + cardState helper), PaginationDots (animated width+color dot), DashboardHeader (thin AppHeader wrapper, internals untouched), CategoryTabs (controlled, reused for in-flow + floating bar), plus components/dashboard/index.ts barrel and re-export through components/index.ts. HERO SLIDER: cardWidth = round(width*0.84) (~84%), symmetric sidePad = (width-cardWidth)/2 centers the active card and peeks neighbours, snapToInterval = cardWidth+GAP with decelerationRate fast + disableIntervalMomentum for clean horizontal snap, and a shared scrollX (useAnimatedScrollHandler) drives per-card interpolation: scale [0.92,1,0.92], opacity [0.6,1,0.6], translateX [22,0,-22] over [(i-1)snap, i*snap, (i+1)snap] with CLAMP - exactly the requested coverflow behavior. HERO CARD: radius via borderRadius.xl (24, in 24-28 range), shadows.lg soft elevation, expo-image fills via StyleSheet.absoluteFill with cover fit + 250ms transition, expo-linear-gradient bottom scrim, status pill states correct: done -> colors.background.card bg + colors.text.primary text; pending -> colors.brand.primary bg + colors.background.primary text; subtitle/progress derived from submitted_forms/total_forms via cardState(). PAGINATION: active dot wider (18 vs 7) and brand-colored with reanimated withSpring width + withTiming backgroundColor; inactive uses colors.border.default. HEADER/TABS: AppHeader preserved (only wrapped); active chip = colors.brand.primary bg + colors.text.inverse text, inactive = colors.background.secondary bg + colors.text.secondary text. THEME COMPLIANCE (most important check): exhaustive ripgrep for hex/rgb(a)/named colors across all new + refactored files found ZERO real violations. The only literals present are ALLOWED exceptions: rgba(0,0,0,a) used strictly inside expo-linear-gradient image scrims (HeroCard.tsx:88, HeroCarousel.tsx:178 - two scrims), and the five official social-platform brand hex values (#0A66C2 LinkedIn, #1877F2 Facebook, #E1306C Instagram, #1DA1F2 Twitter, #FF0000 YouTube) inside the preserved SocialSection icon map (dashboard/index.tsx:310-314), which are platform logo identity, explicitly allowed and noted. Brand color is accessed only via colors.brand.primary. AppHeader.tsx contains its own hardcoded colors (#1B2233, #9AA1AD, #0E1726, #F3F5F9, #E5E7EB) but it is a pre-existing preserved component explicitly out of audit scope (spec says AppHeader internals must not change), so not counted. PRESERVATION: all required behaviors intact - dashboardService + useQuery(['dashboard','content'], retry:false), onRefresh/RefreshControl (tinted with brand), useAuth, greetingForNow() three-bucket, HIDDEN_SECTIONS {rewards,careers} filtering on both tabs and sections, activeTab filtering, section ordering by meta.tabs (excluding 'all') with Object.values fallback when ordered pick is empty, Social special-casing, Presentations special card, cardState() logic verbatim, openCard routing (external -> WebBrowser, detail -> router.push content/[id] with id/type/key/slug/detailId/title/image params, fallback link -> WebBrowser), loading skeleton + error EmptyState+Retry + no-results state, and the auto-hiding floating tab bar (scroll-direction-driven reveal that snaps fully shown/hidden). api/types.ts: git diff shows the ONLY change is removal of three leftover git merge-conflict marker lines (<<<<<<< HEAD / ======= / >>>>>>>); no type definition was altered - DashboardItem, DashboardTab, DashboardSection, DashboardMeta, DashboardContentResponse and the submitted_forms/total_forms/link_type fields are all intact. Those markers were invalid syntax, so their removal is what permitted typecheck to pass; the type contract is effectively unchanged, hence preservationOk=true. DEDUCTIONS: -3 for the in-scope lint warning (unused 'spacing'), -2 for the api/types.ts touch (benign conflict-marker cleanup rather than a true no-op), -1 for minor radius variance between hero/presentation card variants, -1 for empty no-op DashboardHeader.wrap style. No hardcoded-color violations and no missing required behavior."
+    },
+    "projectRoot": ".",
+    "targetQuality": 90
+  }
+}

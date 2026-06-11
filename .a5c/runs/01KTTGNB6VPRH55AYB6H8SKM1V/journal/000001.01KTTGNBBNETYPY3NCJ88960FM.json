@@ -1,0 +1,16 @@
+{
+  "type": "RUN_CREATED",
+  "recordedAt": "2026-06-11T04:57:16.406Z",
+  "data": {
+    "runId": "01KTTGNB6VPRH55AYB6H8SKM1V",
+    "processId": "dashboard-hero-redesign",
+    "entrypoint": {
+      "importPath": "../../processes/dashboard-hero-redesign.js",
+      "exportName": "process"
+    },
+    "harness": "claude-code",
+    "inputsRef": "inputs.json",
+    "prompt": "Redesign the existing MY EZ Dashboard UI into a premium hero-slider experience inspired by a reference image, WITHOUT copying screenshot colors and WITHOUT hardcoding any palette. Use ONLY the existing design system / theme tokens (useTheme(), colors.background, colors.text, colors.border, colors.brand/BRAND, pastelAt(), isDark). Tech: React Native, Expo, TypeScript, react-native-reanimated, expo-image. Keep API contracts, navigation, and dashboardService unchanged.\n\nRequirements: (1) Hero slider — convert section cards into immersive hero cards, horizontal snap carousel, card width 84% screen, neighbours peeking, active scale 1 / inactive 0.92, slight translateX, opacity interpolation. (2) Strict theme rules — no hardcoded whites/greens/blues/grays; background=background.primary, card=background.secondary, text=text.primary, subtitle=text.secondary, accents=brand/BRAND, borders=border; dark mode automatic. (3) Hero card — edge-to-edge image, bottom gradient overlay, radius 24-28, soft elevation, glass effect via theme opacity; left title+subtitle/progress (submitted_forms/total_forms), right status pill (done=surface bg + text.primary, pending=BRAND bg + background.primary text). (4) Pagination — theme colors, active dot BRAND with animated width, inactive=border. (5) Header — keep AppHeader, more spacing, softer typography, existing avatar+greeting. (6) Category tabs — API-driven, active=BRAND bg + theme background text, inactive=background.secondary bg + text.secondary. (7) Refactor into HeroCarousel.tsx, HeroCard.tsx, PaginationDots.tsx, DashboardHeader.tsx, CategoryTabs.tsx. (8) Preserve dashboardService, router navigation, useQuery, auth hooks, filtering, refresh, API models. (9) Production-ready code using existing theme hooks/tokens. Never use screenshot colors; always inherit from the codebase theme."
+  },
+  "checksum": "747cea37c1fcdf459da3a44aa6bcf5b23a247ee5635bbcc768fe9523267c621f"
+}

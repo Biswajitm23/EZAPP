@@ -19,7 +19,7 @@ export default function IncentivesScreen() {
 
   return (
     <RewardsView
-      kicker="Rewards & Recognition"
+      kicker=""
       title="Incentives"
       cardLabel="Total Incentives"
       unit="Incentives"

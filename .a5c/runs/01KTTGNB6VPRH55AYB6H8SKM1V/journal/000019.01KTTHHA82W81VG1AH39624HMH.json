@@ -1,0 +1,11 @@
+{
+  "type": "PROCESS_LOG",
+  "recordedAt": "2026-06-11T05:12:32.770Z",
+  "data": {
+    "harness": "claude-code",
+    "logSeq": -1,
+    "label": "breakpoint:skipped",
+    "message": "Breakpoint 'unnamed' auto-approved (non-interactive mode)"
+  },
+  "checksum": "30dddf18586e1bc29893b2359250c5a219f5a1d6c8a2c57b299dd281231f9a3c"
+}

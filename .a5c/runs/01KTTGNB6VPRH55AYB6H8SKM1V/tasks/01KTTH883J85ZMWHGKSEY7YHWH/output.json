@@ -1,0 +1,1 @@
+{ "passed": true, "exitCode": 0, "totalErrorCount": 0, "scopeErrorCount": 0, "summary": "npx tsc --noEmit: 0 errors. No type errors in components/dashboard/*, the refactored dashboard screen, or components/index.ts." }

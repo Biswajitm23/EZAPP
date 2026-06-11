@@ -6,11 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   ScreenContainer,
   InitialAvatar,
-<<<<<<< HEAD
   SkeletonProfile,
-=======
-  Loader,
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   EmptyState,
   Button,
   DatePickerModal,
@@ -78,10 +74,6 @@ export default function ProfileScreen() {
     setForm({ fname: p.fname, lname: p.lname, phone: p.phone, dob: p.dob, gender: capitalize(p.gender), address: p.address })
   useEffect(() => {
     if (data?.profile) seedForm(data.profile)
-<<<<<<< HEAD
-=======
-    // eslint-disable-next-line react-hooks/exhaustive-deps
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   }, [data?.profile])
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }))
@@ -263,14 +255,11 @@ export default function ProfileScreen() {
     })
   }
 
-<<<<<<< HEAD
   const handleBack = () => {
     if (router.canGoBack()) router.back()
     else router.replace('/(protected)/(tabs)/dashboard')
   }
 
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
   const handleMenu = async () => {
     const choice = await sheet({
       title: 'My Profile',
@@ -286,13 +275,8 @@ export default function ProfileScreen() {
   // --- States ---------------------------------------------------------------
   if (status === 401 || (query.isLoading && !data)) {
     return (
-<<<<<<< HEAD
       <ScreenContainer edges={['top']}>
         <SkeletonProfile />
-=======
-      <ScreenContainer>
-        <Loader />
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
       </ScreenContainer>
     )
   }
@@ -340,12 +324,10 @@ export default function ProfileScreen() {
         {/* Header — centered "Account / My Profile" with a menu button */}
         <Reveal index={0}>
           <View style={styles.header}>
-<<<<<<< HEAD
             <PressableScale style={styles.backBtn} onPress={handleBack} activeScale={0.9} hitSlop={6}>
               <Ionicons name="chevron-back" size={20} color="#1B2233" />
+              <Text style={styles.backText}>Back</Text>
             </PressableScale>
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
             <View style={styles.headerCenter}>
               <Text style={styles.kicker}>Account</Text>
               <Text style={styles.title}>My Profile</Text>
@@ -376,11 +358,6 @@ export default function ProfileScreen() {
 
           <Text style={styles.name}>{p.full_name}</Text>
           {!!p.designation && <Text style={styles.role}>{p.designation}</Text>}
-
-          <PressableScale style={styles.uploadBtn} onPress={() => handleChangePhoto(hasPhoto)} disabled={photoBusy}>
-            <Ionicons name="camera" size={18} color="#FFFFFF" />
-            <Text style={styles.uploadBtnText}>{hasPhoto ? 'Change Profile Picture' : 'Upload Profile Picture'}</Text>
-          </PressableScale>
         </Reveal>
 
         {editing ? (
@@ -591,20 +568,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-<<<<<<< HEAD
   backBtn: {
     position: 'absolute',
     left: 0,
     top: 6,
-    width: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 40,
+    paddingLeft: 8,
+    paddingRight: 14,
     borderRadius: 20,
     backgroundColor: '#F3F5F9',
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: 2,
   },
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
+  backText: { fontSize: 15, fontWeight: '600', color: '#1B2233' },
 
   // Identity block
   identity: { alignItems: 'center', marginTop: 6, marginBottom: 22 },
@@ -634,23 +611,6 @@ const styles = StyleSheet.create({
   },
   name: { fontSize: 22, fontWeight: '800', color: '#0E1726' },
   role: { fontSize: 15, color: '#6B7280', marginTop: 3 },
-  uploadBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    marginTop: 16,
-    height: 48,
-    paddingHorizontal: 22,
-    borderRadius: 30,
-    backgroundColor: TEAL,
-    shadowColor: '#0E7A60',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.22,
-    shadowRadius: 14,
-    elevation: 6,
-  },
-  uploadBtnText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
 
   // Section cards
   sectionCard: {

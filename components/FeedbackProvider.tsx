@@ -87,10 +87,7 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [])
 
   const showToast = useCallback((message: string, type: ToastType = 'success', duration = 2600) => {
-<<<<<<< HEAD
     if (!message || !message.trim()) return
-=======
->>>>>>> 7bd40f4462d6b8d134c54f2d6eb8b38d2134af43
     if (timer.current) clearTimeout(timer.current)
     setToastState({ message, type })
     setToastVisible(true)

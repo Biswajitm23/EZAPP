@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "2026.01.results-v1",
+  "effectId": "01KTTGWYVNPNMNF52V0HWY4D5E",
+  "taskId": "implement-redesign",
+  "invocationKey": "dashboard-hero-redesign:S000002:implement-redesign",
+  "status": "ok",
+  "result": {
+    "filesCreated": [
+      "components/dashboard/HeroCard.tsx",
+      "components/dashboard/PaginationDots.tsx",
+      "components/dashboard/CategoryTabs.tsx",
+      "components/dashboard/DashboardHeader.tsx",
+      "components/dashboard/HeroCarousel.tsx",
+      "components/dashboard/index.ts"
+    ],
+    "filesModified": [
+      "components/index.ts",
+      "app/(protected)/(tabs)/dashboard/index.tsx"
+    ],
+    "summary": "Built a premium hero-slider dashboard split into reusable, fully token-themed components under components/dashboard/ and refactored the dashboard screen to compose them. HeroCard.tsx: edge-to-edge expo-image (contentFit cover, transition 250) with an expo-linear-gradient bottom scrim, borderRadius.xl (24) corners, shadows.lg elevation, LEFT title+subtitle / RIGHT status pill (done -> background.card bg + text.primary; pending -> brand.primary bg + background.primary text), and a pastelAt(index) bg + accent-text fallback when image-less; it also owns the shared cardState() helper (logic preserved verbatim). PaginationDots.tsx: active dot animates wider + brand.primary via reanimated withSpring/withTiming on the UI thread, inactive = border.default. CategoryTabs.tsx: controlled DashboardTab chips (active = brand.primary bg + text.inverse, inactive = background.secondary bg + text.secondary, borderRadius.full) built on PressableScale. DashboardHeader.tsx: wraps AppHeader (kicker=greeting, title=firstName, align left) with token spacing. HeroCarousel.tsx: horizontal snap pager, cardWidth = Math.round(width*0.84) via useWindowDimensions, symmetric side padding (width-cardWidth)/2, snap = cardWidth+gap, shared scrollX via useAnimatedScrollHandler, per-card useAnimatedStyle interpolating over [(i-1)*snap, i*snap, (i+1)*snap] -> scale [0.92,1,0.92] / opacity [0.6,1,0.6] / translateX [+22,0,-22] with Extrapolation.CLAMP, page synced on onMomentumScrollEnd into PaginationDots, section title rendered, single-item centering and the Presentations special card preserved (PresentationCard now fully themed). components/dashboard/index.ts barrels all five (DashboardHeader, CategoryTabs, HeroCarousel exported; HeroCard + PaginationDots + cardState also exported for reuse) and components/index.ts re-exports it via a Dashboard section. The screen still uses dashboardService.getContent + useQuery(['dashboard','content'], retry:false), onRefresh/RefreshControl (tint = brand.primary), useAuth, greetingForNow(), HIDDEN_SECTIONS filtering, active-tab filtering, meta.tabs ordering with Object.values fallback, Social brand-icon rows (themed; platform logo colors kept as identity), cardState routing, openCard routing, loading/error/no-results states, and the auto-hiding floating tab bar (now rendering CategoryTabs and using shadows.md). STRICT THEME RULE satisfied: every themeable color maps through useTheme() tokens; the only remaining literals are rgba(0,0,0,a) inside the two linear-gradient image scrims (the explicitly permitted exception) and the social platforms' official logo hex colors inside the preserved Social section. All inline shadowColor/shadowOpacity/elevation removed in favor of the shadows token. api/types.ts is unchanged. Project passes npx tsc --noEmit with no errors."
+  },
+  "startedAt": "2026-06-11T05:07:25.829Z",
+  "finishedAt": "2026-06-11T05:07:25.829Z",
+  "value": {
+    "filesCreated": [
+      "components/dashboard/HeroCard.tsx",
+      "components/dashboard/PaginationDots.tsx",
+      "components/dashboard/CategoryTabs.tsx",
+      "components/dashboard/DashboardHeader.tsx",
+      "components/dashboard/HeroCarousel.tsx",
+      "components/dashboard/index.ts"
+    ],
+    "filesModified": [
+      "components/index.ts",
+      "app/(protected)/(tabs)/dashboard/index.tsx"
+    ],
+    "summary": "Built a premium hero-slider dashboard split into reusable, fully token-themed components under components/dashboard/ and refactored the dashboard screen to compose them. HeroCard.tsx: edge-to-edge expo-image (contentFit cover, transition 250) with an expo-linear-gradient bottom scrim, borderRadius.xl (24) corners, shadows.lg elevation, LEFT title+subtitle / RIGHT status pill (done -> background.card bg + text.primary; pending -> brand.primary bg + background.primary text), and a pastelAt(index) bg + accent-text fallback when image-less; it also owns the shared cardState() helper (logic preserved verbatim). PaginationDots.tsx: active dot animates wider + brand.primary via reanimated withSpring/withTiming on the UI thread, inactive = border.default. CategoryTabs.tsx: controlled DashboardTab chips (active = brand.primary bg + text.inverse, inactive = background.secondary bg + text.secondary, borderRadius.full) built on PressableScale. DashboardHeader.tsx: wraps AppHeader (kicker=greeting, title=firstName, align left) with token spacing. HeroCarousel.tsx: horizontal snap pager, cardWidth = Math.round(width*0.84) via useWindowDimensions, symmetric side padding (width-cardWidth)/2, snap = cardWidth+gap, shared scrollX via useAnimatedScrollHandler, per-card useAnimatedStyle interpolating over [(i-1)*snap, i*snap, (i+1)*snap] -> scale [0.92,1,0.92] / opacity [0.6,1,0.6] / translateX [+22,0,-22] with Extrapolation.CLAMP, page synced on onMomentumScrollEnd into PaginationDots, section title rendered, single-item centering and the Presentations special card preserved (PresentationCard now fully themed). components/dashboard/index.ts barrels all five (DashboardHeader, CategoryTabs, HeroCarousel exported; HeroCard + PaginationDots + cardState also exported for reuse) and components/index.ts re-exports it via a Dashboard section. The screen still uses dashboardService.getContent + useQuery(['dashboard','content'], retry:false), onRefresh/RefreshControl (tint = brand.primary), useAuth, greetingForNow(), HIDDEN_SECTIONS filtering, active-tab filtering, meta.tabs ordering with Object.values fallback, Social brand-icon rows (themed; platform logo colors kept as identity), cardState routing, openCard routing, loading/error/no-results states, and the auto-hiding floating tab bar (now rendering CategoryTabs and using shadows.md). STRICT THEME RULE satisfied: every themeable color maps through useTheme() tokens; the only remaining literals are rgba(0,0,0,a) inside the two linear-gradient image scrims (the explicitly permitted exception) and the social platforms' official logo hex colors inside the preserved Social section. All inline shadowColor/shadowOpacity/elevation removed in favor of the shadows token. api/types.ts is unchanged. Project passes npx tsc --noEmit with no errors."
+  }
+}

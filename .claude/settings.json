@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(out=\"C:\\\\\\\\Users\\\\\\\\Biswajit\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\d--CLIENT-Bitpastel-Employee-Zone-App-02-06-2026-EMPAPP\\\\\\\\76f792b2-7c8e-42c2-9920-50ac8b7b3c10\\\\\\\\tasks\\\\\\\\b1jn536u2.output\"; for i in $\\(seq 1 60\\); do if grep -qiE \"Android Bundled|ERROR |Bundling failed|Unable to resolve\" \"$out\"; then break; fi; sleep 4; done; cat \"$out\"; echo \"=== screenshot ===\"; adb -s emulator-5554 exec-out screencap -p > \"C:\\\\\\\\Users\\\\\\\\Biswajit\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\empapp_screen2.png\"; echo done)",
       "Bash(adb -s emulator-5554 reverse tcp:8081 tcp:8081)",
@@ -17,8 +16,32 @@
       "Bash(adb -s emulator-5554 shell input keyevent 123)",
       "Bash(adb -s emulator-5554 shell input keyevent 67)",
       "Bash(adb -s emulator-5554 shell input tap 598 2274)",
-      "Bash(adb -s emulator-5554 shell input text 'z^B!d56o6x\\\\$w')"
+      "Bash(adb -s emulator-5554 shell input text 'z^B!d56o6x\\\\$w')",
+      "Bash(Start-Sleep -Seconds 8)",
+      "Bash(Get-Content \"C:\\\\Users\\\\Biswajit\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--CLIENT-Bitpastel-Employee-Zone-App-02-06-2026-EZAPP-EMPAPP\\\\4c265721-7518-4dbb-9723-c431683d5387\\\\tasks\\\\bzh6homzj.output\")",
+      "PowerShell(adb devices)",
+      "PowerShell($emu = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\emulator\\\\emulator.exe\"; if \\(Test-Path $emu\\) { & $emu -list-avds } else { Write-Output \"EMULATOR_NOT_FOUND at $emu\" })",
+      "PowerShell($emu = \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\emulator\\\\emulator.exe\"; Start-Process -FilePath $emu -ArgumentList \"-avd\",\"Pixel_6a\",\"-no-snapshot-save\"; Write-Output \"Emulator launching...\")",
+      "PowerShell($conns = Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue; if \\($conns\\) { $conns | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; \"PID $\\($_.OwningProcess\\) : $\\($p.ProcessName\\)\" } } else { \"Port 8081 is free\" })",
+      "PowerShell($c = Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { $c | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; Start-Sleep 1 }; $c2 = Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue; if \\($c2\\) {\"BUSY\"} else {\"FREE\"})",
+      "PowerShell(& adb shell am force-stop com.bitpastel.empapp)",
+      "PowerShell(& adb shell am force-stop host.exp.exponent)",
+      "PowerShell(& adb shell am start -a android.intent.action.VIEW -d \"exp://10.26.62.165:8081\" host.exp.exponent 2>&1)",
+      "Bash(git -C \"d:/CLIENT/Bitpastel/Employee Zone App/02-06-2026/EZAPP/EMPAPP\" log --oneline -8 --graph)",
+      "Bash(git -C \"d:/CLIENT/Bitpastel/Employee Zone App/02-06-2026/EZAPP/EMPAPP\" show --no-patch --format=\"%H %P %s\" 4dba219)",
+      "Bash(git checkout *)",
+      "Bash(grep -lE *)",
+      "Bash(ls -1 \"app/\\(protected\\)/detail/\")",
+      "PowerShell($out = \"$env:TEMP\\\\ez_app_shot.png\"; & adb exec-out screencap -p > $out; if \\(\\(Get-Item $out\\).Length -gt 0\\) { Write-Output \"Screenshot saved: $out \\($\\(\\(Get-Item $out\\).Length\\) bytes\\)\" } else { Write-Output \"EMPTY screenshot\" })",
+      "PowerShell(& adb shell screencap -p /sdcard/ez_shot.png; & adb pull /sdcard/ez_shot.png \"$env:TEMP\\\\ez_app_shot.png\" 2>&1 | Select-Object -Last 1; & adb shell rm /sdcard/ez_shot.png)",
+      "Bash(node -e \"console.log\\(require\\('expo-video/package.json'\\).version\\)\")",
+      "Bash(node -e \"const e=require\\('expo'\\); console.log\\('useEvent:', typeof e.useEvent, '| useEventListener:', typeof e.useEventListener\\)\")",
+      "Bash(echo \"=== total errors: $\\(npx tsc --noEmit -p tsconfig.json 2>&1)",
+      "Bash(curl -s -o /tmp/ez_bundle.js -w \"%{http_code}\" \"http://localhost:8081/index.bundle?platform=android&dev=true&minify=false\")",
+      "Read(//tmp/**)",
+      "PowerShell($f = \"C:\\\\Users\\\\Biswajit\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--CLIENT-Bitpastel-Employee-Zone-App-02-06-2026-EZAPP-EMPAPP\\\\4c265721-7518-4dbb-9723-c431683d5387\\\\tasks\\\\bl19jexab.output\"; Select-String -Path $f -Pattern \"Android Bundled|Bundling failed|Unable to resolve|TransformError|SyntaxError\" | Select-Object -Last 6 | ForEach-Object { $_.Line })"
     ],
+    "defaultMode": "bypassPermissions",
     "additionalDirectories": [
       "C:\\Users\\Biswajit\\AppData\\Local\\Temp"
     ]
